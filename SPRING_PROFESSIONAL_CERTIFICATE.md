@@ -10,6 +10,28 @@
 
 # TOPIC:
 ### 1. Container, Dependency and IOC
+
+#### ***Question 1:** What is dependency injection and what are the advantages of using it?*
+
+- Dependency injection - DI: is also know as IoC. 
+    - This is a process whereby objects define their dependencies only thoughout constructor arguments, arguments to a factory method, or properties that are set on the object instance after it is constructed or returned from a factory method.
+    - The container then inject the dependencies when it create bean. 
+    - Dependency injection is a fundamentally the inverse of bean itself controlling the instantiation or location of its dependencies by using
+        - Direct contruction of classes
+        - Mechanism such as Service Locator pattem.
+        
+> IoC - Inversion of control
+
+> Service locator pattem: 
+
+
+#### ***Question 2:** What is an interface and what are the advantages of making use of them in Java?*
+#### ***Question 3:** What is an ApplicationContext?*
+#### ***Question 4:** How are you going to create a new instance of an ApplicationContext?*
+#### ***Question 5:** Can you describe the lifecycle of a Spring Bean in an ApplicationContext?*
+#### ***Question 6:** How are you going to create an ApplicationContext in an integration test?*
+#### ***Question 7:** What is the preferred way to close an application context? Does Spring Boot do this for you?*
+
 ### 2. Aspect-Oriented Programming (AOP)
 ### 3. Data Management: JDBC, Transactions
 ### 4. Spring Data JPA
