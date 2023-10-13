@@ -1,4 +1,8 @@
 # Oracel Certificate Professional - Java 17
+- Link: https://mylearn.oracle.com/ou/learning-path/java-explorer/79726
+- Course name: Java Explorer
+
+---
 
 > ***Overview***
 - Java is cross-platform - because each java program only needs to be written and compiled once
