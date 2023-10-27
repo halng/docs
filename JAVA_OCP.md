@@ -52,3 +52,148 @@
 ### 11. Implementing Localization
 
 - Implement localization using locales, resource bundles, parse and format messages, dates, times, and numbers including currency and percentage values
+
+## Note for the book
+Assessment Test
+- First time 16/30 🥲 
+
+### Chapter 1: Building blocks
+1. ***Understading the class structure***
+    - **Fields**: more generally known as variables. -> hold the state of the program
+    - **Methods**: often called function or procedures -> operate on thatb state
+    ```java
+    public class Animals {
+        String name; // variable
+        public Animals(){} // contructor
+        public Animals(String name){ // another contructor
+            this.name = name;
+        }
+
+        public void setName(String newName) { // method
+            this.name = newName;
+        }
+
+        public String getName() { // another method
+            return this.name;
+        }
+
+        // this is single-line comment
+        /**
+         * This is syntax of block comment
+         * and so on... 
+         */
+    }
+    ```
+
+    - **Classes and source files**: 
+        - *top-level type*: is a data structure that can be defined independently within a source file.
+            - is often public
+            - if don't have a public type, it needs to match filename.
+
+2. ***Writing a `main()` method***
+    - The `main()` method lets the `JVM` call out code.  
+        ```java
+            public class Animals {
+                public static void main(String[] args) {
+                    System.out.println("Hello World");
+                }
+            }
+        ```
+    - Rule for the file name:
+        - Each file can contain only one `public` class
+        - The filename must match the class name, including case, and have a .java extension
+        - If the java class in an entry point for the program, It must contain a vaid `main()` methods
+
+3. ***Understanding package declarations and imports***
+    - `Package`: Java classes are grouped into packages. 
+    - `Wildcards`: classes in the same package are oftern imported together. We can use a shortcut to `import` all the classes in a package
+    ```java
+    import java.util.*; // imports java.util.Random among other things
+    public class NumberPicker {
+        public static void main(String[] args) {
+            Random r = new Random();
+            System.out.println(r.nextInt(10));
+        }
+    }
+    ```
+    - `Naming conflicts`: One of the reasons for using packages is so that class names don't have to be unique across all of Java. That means you'll sometimes want to import a class that can be found in multiple places. 
+    For example:
+    ```java
+    import java.util.*;
+    import java.sql.*;
+
+    public class Conflicts {
+        Date date;  // conflict -> cause have 2 class Date in two package imported -> compiler error
+        //some code
+    }
+    ```
+    But sometimes, we want to use Date from two different packages. -> import statemaent and use the other's *fully qualified* class name
+    ```java
+    public class Conflicts {
+        java.util.Date utilDate;
+        java.sql.Date sqlDate;
+        //some code
+    }
+
+    // now it compile success
+    ```
+    | Element | Example | Required ? | Where does it go ? |
+    | - | - | - | - |
+    Package declaration | package abc; | No | first line in the file (Excluding comments or blank lines)
+    | import statements | import java.util.* | No | immediately after the package (if present)
+    | `top-level type` declaration | public class Animals | Yes | immediately after the import (if any)
+    | field declarations | int value; | No | Any `top-level` element within a class
+    | method declarations | void method() | No | Any top-level element within a class
+
+    ```java
+    package abc; // package
+    import java.util.*; // import
+
+    public class Animals {
+        double weight; // field
+        public double getWeight() { // method
+            return this.weight;
+        }
+        double height; // another fields
+    }
+    ```
+
+4. **Creating Objects**
+> Out program wouldn't be able to do any thing useful if we didn't have the ability to create new objects. Remember that an objects is an instance of a class. In the following sections, we look at constructors, object fields, instance initializers, and the other in which values are initialized.
+- Calling Constructors 
+```java
+Park p = new Park()
+
+// <Declare the type> <variable name> = new  <object's contructors>
+
+
+// Contructor example:
+public class Park {
+    public Park(){}
+}
+```
+- The constructor: 
+    - Have a name matches the name of the class
+    - No return type
+    - The purpose is to **initialize field** 
+
+    - For most classes, if don't have a code for constructor - the `compiler` will supply a **do noting** default constructor.
+
+- Reading and writing member fields
+
+
+
+### Chapter 2: Operators
+### Chapter 3: Making Decisions
+### Chapter 4: Core APIs
+### Chapter 5: Methods
+### Chapter 6: Class Design
+### Chapter 7: Beyond Classes
+### Chapter 8: Lambdas and Functional Interfaces
+### Chapter 9: Collections and Generics
+### Chapter 10: Streams
+### Chapter 11: Exception and Localiza~tion
+### Chapter 12: Modules
+### Chapter 13: Concurrency
+### Chapter 14: I/O
+### Chapter 15: JDBC
