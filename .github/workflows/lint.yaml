@@ -21,7 +21,7 @@ jobs:
         run: npm install -g markdownlint-cli
 
       - name: Lint Markdown
-        run: markdownlint --fix **/*.md
+        run: markdownlint --fix -q **/*.md
 
       - name: Commit Change
         run: |
