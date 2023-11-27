@@ -21,4 +21,10 @@ jobs:
         run: npm install -g markdownlint-cli
 
       - name: Lint Markdown
-        run: markdownlint **/*.md
+        run: markdownlint **/*.md -f
+
+      - name: Commit Change
+        run: |
+            git add .
+            git commit -m "Syntax: Fixing lint issue"
+            git push
