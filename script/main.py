@@ -16,14 +16,23 @@ class GitUtils:
         self.pr_number = ""
         self.repo = git.Repo(".")
         self.all_changes = [
-            d.a_path for d in self.repo.head.commit.diff(None)]
-        
+            d.a_path for d in self.repo.index.diff(None)] + self.repo.untracked_files
     def get_category_change(self):
         # {update: [category name], create: []}
-        return None
+        cate_changes = []
+        for change in self.all_changes:
+            _p = change.split("/")
+            if len(_p) == 3 and _p[0] in ["blogs", "library"]:
+                cate_changes.append(change) 
+        return cate_changes
     
     def get_blog_change(self):
-        return None
+        blogs_changes = []
+        for change in self.all_changes:
+            _p = change.split("/")
+            if len(_p) == 4 and _p[0] in ["blogs", "library"]:
+                blogs_changes.append(change)
+        return blogs_changes
     
     def is_run(self):
         """ Check is need to send request to create or not by checking file BUILD."""
@@ -74,9 +83,11 @@ class CRUDBase:
             return False
         
     def run_pre_merged(self):
+        # show by comment on pr which file or category change
         pass
     
     def run_merged(self):
+        # Alert on slack about change
         pass
     
     def run(self, branch):
@@ -87,24 +98,12 @@ class Category(CRUDBase):
         cate_url = f'{self.base_url}/categories'
         super().__init__(cate_url)
     
-    def run(self, branch):
-        if GitUtils.get_category_change() is None:
-            print("No category changed. Exit...")
-            return
-        else: super().run(branch=branch)
-            
     
 class Blog(CRUDBase):
     def __init__(self) -> None:
         blog_url = f'{self.base_url}/blogs'
         super().__init__(blog_url)
-
-    def run(self, branch):
-        if GitUtils.get_blog_change() is None:
-            print("No blogs changed. Exit...")
-            return
-        else:
-            super().run(branch=branch)
+            
             
 def update_build_and_comment(_g: GitUtils):
     with open("./BUILD", "r") as f:
@@ -117,9 +116,12 @@ def update_build_and_comment(_g: GitUtils):
     
 if __name__ == '__main__':
     g = GitUtils()
-    # if g.is_run():
-    #     b = Blog()
-    #     c = Category()
-    #     b.run()
-    #     c.run()
-    update_build_and_comment(g)
+    branch = "dev"
+    if g.is_run():
+        if len(g.get_category_change()) == 0:
+            c = Category()
+            c.run(branch)
+        if len(g.get_blog_change()) == 0:
+            b = Blog()
+            b.run(branch)
+        update_build_and_comment(g)

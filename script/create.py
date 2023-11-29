@@ -39,9 +39,13 @@ def get_input_data_for_blog():
 
     _type = input("Enter 1. Library | 2. Blogs: ")
     parent_folder = 'library' if _type == '1' else 'blogs'
-
-    categories = [x[0].split('/')[-1] for x in os.walk(f'./{parent_folder}/')]
-    categories.remove("")
+    
+    categories = set()
+    for x in os.walk(f'./{parent_folder}/'):
+        x_path = x[0].split("/")
+        if len(x_path) >= 2 and x_path[2] != "":
+            categories.add(x_path[2])
+            
     if len(categories) == 0:
         print("No valid category found! Pls create category first!")
         exit(1)
@@ -77,6 +81,8 @@ def create_blog():
     idx = '0' * (4 - len(number_post)) + number_post
     initial_data(path_to_parent, idx, DEFAULT_BLOG_DATA)
 
+    with open('./INDEX', "w") as file:
+        file.write(str(int(number_post) + 1))
 
 def create_category():
     _type = input("Enter 1. Library | 2. Blogs: ")
