@@ -71,7 +71,7 @@ def create_blog():
     DEFAULT_BLOG_DATA['previous'] = previous_id
     DEFAULT_BLOG_DATA['title'] = name
 
-    with open('./BUILD', "r") as file:
+    with open('./INDEX', "r") as file:
         number_post = file.readlines()[0]
 
     idx = '0' * (4 - len(number_post)) + number_post
