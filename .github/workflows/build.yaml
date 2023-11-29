@@ -23,8 +23,8 @@ jobs:
             run: |
                   git checkout main
                   git pull origin main
-                  git checkout ${{github.ref}}
-                  git pull origin ${{github.ref}}
+                  git checkout ${{github.head_ref}}
+                  git pull origin ${{github.head_ref}}
 
           - name: Install dependencies
             run: |
@@ -37,5 +37,5 @@ jobs:
                 SLACK_WEB_HOOK: ${{ secrets.SLACK_WEB_HOOK }}
                 BASE_URL: ${{ secrets.BASE_URL }}
                 PR_NUMBER: ${{ github.event.number }}
-                CURRENT_BRANCH: ${{ github.ref }}
+                CURRENT_BRANCH: ${{ github.head_ref }}
             run: python script/main.py
