@@ -210,7 +210,7 @@ def alert_slack(msg):
     requests.post(os.getenv(SLACK_WEB_HOOK), json=payload)
     
 if __name__ == '__main__':
-    branch = os.getenv("CURRENT_BRANCH","").split("/")[-1]
+    branch = os.getenv("CURRENT_BRANCH","")#.split("/")[-1]
     print(branch)
     g = GitUtils(remote_branch="main", current_branch=branch)
     
