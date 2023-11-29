@@ -30,5 +30,5 @@ jobs:
                 SLACK_WEB_HOOK: ${{ secrets.SLACK_WEB_HOOK }}
                 BASE_URL: ${{ secrets.BASE_URL }}
                 PR_NUMBER: ${{ github.event.number }}
-                CURRENT_BRANCH: ${{ github.ref }}
+                CURRENT_BRANCH: ${{ github.ref_name }}
             run: python script/main.py
