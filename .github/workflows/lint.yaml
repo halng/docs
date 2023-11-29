@@ -16,3 +16,4 @@ jobs:
         with:
           globs: 'blogs/*.md,library/*.md'
           separator: ','
+          config: custom.markdownlint.yaml
