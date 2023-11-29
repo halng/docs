@@ -2,7 +2,7 @@ name: Lint
 
 on:
   pull_request:
-    branches: main
+    branches: [main]
 
 jobs:
   markdown-lint:
@@ -12,13 +12,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: DavidAnson/markdownlint-cli2-action@v14
         with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: npm install -g markdownlint-cli
-
-      - name: Lint Markdown
-        run: markdownlint **/*.md
+          config: "./custom.markdownlint-cli2.yaml"
