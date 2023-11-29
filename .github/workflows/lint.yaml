@@ -14,4 +14,5 @@ jobs:
 
       - uses: DavidAnson/markdownlint-cli2-action@v14
         with:
-          config: "./custom.markdownlint-cli2.yaml"
+          globs: 'blogs/*.md,library/*.md'
+          separator: ','
