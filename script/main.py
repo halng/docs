@@ -33,7 +33,7 @@ class GitUtils:
 
         else:
             self.repo.remotes.origin.fetch()
-            local_commit = self.repo.commit(self.current_branch)
+            local_commit = self.repo.head.commit
             remote_commit = self.repo.commit(self.remote_branch)
             changes = self.repo.git.diff(
                 remote_commit, local_commit, name_status=True)
@@ -215,7 +215,7 @@ if __name__ == '__main__':
     g = GitUtils(remote_branch="main", current_branch=branch)
     
     if branch != "main":
-        alert_slack(f"Have some change in\n- pr https://github.com/tanhaok/docs/pull/{os.getenv(PR_NUMBER)} \n- Branch: https://github.com/tanhaok/docs/tree/{branch}")
+        alert_slack(f"Have some change in pr: https://github.com/tanhaok/docs/pull/{os.getenv(PR_NUMBER)}")
     else:
         alert_slack("New pr merged into main")
         
