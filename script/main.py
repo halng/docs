@@ -12,16 +12,40 @@ class Action(Enum):
     UPDATE_STATUS = 3
     
 class GitUtils:
-    def __init__(self) -> None:
+    def __init__(self, remote_branch="main", current_branch = "") -> None:
         self.pr_number = ""
         self.repo = git.Repo(".")
-        self.all_changes = [
-            d.a_path for d in self.repo.index.diff(None)] + self.repo.untracked_files
+        self.all_changes = []
+        self.remote_branch = remote_branch
+        self.current_branch = current_branch
+        self.get_all_changes()
+        
+    def get_all_changes(self):
+        if self.remote_branch == self.current_branch:
+            latest_commit = self.repo.head.commit
+            second_latest_commit = latest_commit.parents[0] if latest_commit.parents else None
+            
+            changes = self.repo.index.diff(second_latest_commit, latest_commit, name_status=True)
+
+        else:
+            self.repo.remotes.origin.fetch()
+            local_commit = self.repo.commit(self.current_branch)
+            remote_commit = self.repo.commit(self.remote_branch)
+            changes = self.repo.git.diff(
+                remote_commit, local_commit, name_status=True)
+            
+        for d in changes.split('\n'):
+            if d:
+                change_type, file_path = d.split('\t')
+                self.all_changes.append({
+                    '_type': change_type,
+                    '_path': file_path
+                })
     def get_category_change(self):
         # {update: [category name], create: []}
         cate_changes = []
         for change in self.all_changes:
-            _p = change.split("/")
+            _p = change['_path'].split("/")
             if len(_p) == 3 and _p[0] in ["blogs", "library"]:
                 cate_changes.append(change) 
         return cate_changes
@@ -29,7 +53,7 @@ class GitUtils:
     def get_blog_change(self):
         blogs_changes = []
         for change in self.all_changes:
-            _p = change.split("/")
+            _p = change['_path'].split("/")
             if len(_p) == 4 and _p[0] in ["blogs", "library"]:
                 blogs_changes.append(change)
         return blogs_changes
@@ -46,7 +70,7 @@ class CRUDBase:
     def __init__(self, _url) -> None:
         api_key = os.environ.get(API_KEY_NAME)
         self.base_url = os.environ.get(BASE_URL)
-        self.req_url = _url
+        self.req_url = f'{self.base_url}/{_url}'
         self.header = {'X-REQUEST-API-TOKEN': api_key}
         self.data = {}
         self._id = None
@@ -82,27 +106,39 @@ class CRUDBase:
             # alert on slack
             return False
         
-    def run_pre_merged(self):
+    def run_pre_merged(self, data):
         # show by comment on pr which file or category change
         pass
     
-    def run_merged(self):
+    def run_merged(self, data):
         # Alert on slack about change
         pass
     
-    def run(self, branch):
-        self.run_merged() if branch == "main" else self.run_pre_merged()
+    def run(self, branch, data):
+        self.run_merged(data) if branch == "main" else self.run_pre_merged(data)
     
 class Category(CRUDBase):
     def __init__(self) -> None:
-        cate_url = f'{self.base_url}/categories'
-        super().__init__(cate_url)
+        super().__init__("categories")
+        
+    def run_merged(self, data):
+        return super().run_merged()
+    
+    def run_pre_merged(self, data):
+        print("Run Check Before Merged")
+
     
     
 class Blog(CRUDBase):
     def __init__(self) -> None:
-        blog_url = f'{self.base_url}/blogs'
-        super().__init__(blog_url)
+        super().__init__("blogs")
+    
+    def run_pre_merged(self, data):
+        print("Run Check Before Merged")
+        
+    
+    def run_merged(self, data):
+        return super().run_merged()
             
             
 def update_build_and_comment(_g: GitUtils):
@@ -115,13 +151,14 @@ def update_build_and_comment(_g: GitUtils):
     _g.add_latest_change(new_idx)
     
 if __name__ == '__main__':
-    g = GitUtils()
+    g = GitUtils(remote_branch="main", current_branch="test")
     branch = "dev"
+    print(g.get_blog_change())
     if g.is_run():
-        if len(g.get_category_change()) == 0:
+        if len(g.get_category_change()) > 0:
             c = Category()
-            c.run(branch)
-        if len(g.get_blog_change()) == 0:
+            c.run(branch, g.get_category_change())
+        if len(g.get_blog_change()) > 0:
             b = Blog()
-            b.run(branch)
-        update_build_and_comment(g)
+            b.run(branch, g.get_blog_change())
+        # update_build_and_comment(g)
