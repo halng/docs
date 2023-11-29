@@ -15,6 +15,11 @@ jobs:
             with:
               fetch-depth: 0
 
+          - name: Set Branch Output
+            id: set_branch
+            run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
+            shell: bash
+
           - name: Install Python
             uses: actions/setup-python@v2
             with:
@@ -30,5 +35,5 @@ jobs:
                 SLACK_WEB_HOOK: ${{ secrets.SLACK_WEB_HOOK }}
                 BASE_URL: ${{ secrets.BASE_URL }}
                 PR_NUMBER: ${{ github.event.number }}
-                CURRENT_BRANCH: ${{ github.head_ref }}
+                CURRENT_BRANCH: ${{ steps.set_branch.outputs.branch }}
             run: python script/main.py
