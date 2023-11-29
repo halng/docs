@@ -1,8 +1,12 @@
 
 
 # Disable some built-in rules
-config:
-  line-length: 120
+# config:
+  # line-length: 120
+
+# MD013/line-length - Line length
+MD013:
+  line_length: 120
 
 # Fix any fixable errors
 fix: false
