@@ -2,18 +2,22 @@ import os
 import requests
 from enum import Enum
 import git
+import yaml
 
 API_KEY_NAME = "API_AUTH_TOKEN_VALUE"
 BASE_URL = "BACKEND_BASE_URL"
-
+PR_NUMBER = "PR_NUMBER"
+GITHUB_TOKEN = "GITHUB_TOKEN"
+SLACK_WEB_HOOK = "SLACK_WEB_HOOK"
 class Action(Enum):
     CREATE = 1,
     UPDATE = 2,
     UPDATE_STATUS = 3
     
+    
 class GitUtils:
     def __init__(self, remote_branch="main", current_branch = "") -> None:
-        self.pr_number = ""
+        self.pr_number = os.getenv(PR_NUMBER)
         self.repo = git.Repo(".")
         self.all_changes = []
         self.remote_branch = remote_branch
@@ -65,11 +69,27 @@ class GitUtils:
     def add_latest_change(self, _version):
         self.repo.git.add(all=True)
         self.repo.git.commit("-m", str(_version))
+    
+    def comment_pr(self, msg):
+        pr_url = f'https://api.github.com/repos/tanhaok/docs/issues/{self.pr_number}/comments'
+        # Set up the comment data
+        comment_data = {
+            'body': msg,
+        }
+
         
+        # Create a comment on the pull request
+        response = requests.post(url=pr_url, json=comment_data, headers={'Authorization': f'token {os.getenv("GITHUB_TOKEN")}', 'Accept': 'application/vnd.github.v3+json'})
+
+        if response.status_code == 201:
+            print('Comment created successfully.')
+        else:
+            print(f'Error creating comment. Status code: {response.status_code}, Response: {response.text}')
+            
 class CRUDBase:
     def __init__(self, _url) -> None:
-        api_key = os.environ.get(API_KEY_NAME)
-        self.base_url = os.environ.get(BASE_URL)
+        api_key = os.getenv(API_KEY_NAME)
+        self.base_url = os.getenv(BASE_URL)
         self.req_url = f'{self.base_url}/{_url}'
         self.header = {'X-REQUEST-API-TOKEN': api_key}
         self.data = {}
@@ -115,7 +135,7 @@ class CRUDBase:
         pass
     
     def run(self, branch, data):
-        self.run_merged(data) if branch == "main" else self.run_pre_merged(data)
+        return self.run_merged(data) if branch == "main" else self.run_pre_merged(data)
     
 class Category(CRUDBase):
     def __init__(self) -> None:
@@ -124,8 +144,24 @@ class Category(CRUDBase):
     def run_merged(self, data):
         return super().run_merged()
     
-    def run_pre_merged(self, data):
-        print("Run Check Before Merged")
+    def run_pre_merged(self, data_changes: dict):
+        msg = ""
+        for _data in data_changes:
+            if str(_data['_path']).endswith('.yaml'):
+                with open(_data['_path'], 'r') as f:
+                    new_data = yaml.safe_load(f)
+                _type = _data['_type']
+                _action = ""
+                if _type == "A":
+                    _action = "Create"
+                elif _type == "M":
+                    _action = "Update"
+                else: 
+                    _action = "Un-support"
+                    
+                msg = msg + f"\n- {_action} category name `{new_data['data']['name']}` under `{str(_data['_path'])}`"
+        
+        return msg
 
     
     
@@ -133,10 +169,25 @@ class Blog(CRUDBase):
     def __init__(self) -> None:
         super().__init__("blogs")
     
-    def run_pre_merged(self, data):
-        print("Run Check Before Merged")
+    def run_pre_merged(self, data_changes: dict):
+        msg = ""
+        for _data in data_changes:
+            if str(_data['_path']).endswith('.yaml'):
+                with open(_data['_path'], 'r') as f:
+                    new_data = yaml.safe_load(f)
+                _type = _data['_type']
+                _action = ""
+                if _type == "A":
+                    _action = "Create"
+                elif _type == "M":
+                    _action = "Update"
+                else: 
+                    _action = "Un-support"
+                    
+                msg = msg + f"\n- {_action} blog name `{new_data['data']['title']}` under `{str(_data['_path'])}`"
         
-    
+        return msg
+        
     def run_merged(self, data):
         return super().run_merged()
             
@@ -150,15 +201,33 @@ def update_build_and_comment(_g: GitUtils):
     
     _g.add_latest_change(new_idx)
     
+def alert_slack(msg):
+    payload = {
+        "username": "AutoBot",
+        "icon_emoji": ":robot_face:",
+        'text': msg
+    }
+    requests.post(os.getenv(SLACK_WEB_HOOK), json=payload)
+    
 if __name__ == '__main__':
-    g = GitUtils(remote_branch="main", current_branch="test")
-    branch = "dev"
-    print(g.get_blog_change())
+    branch = os.getenv("CURRENT_BRANCH","").split("/")[-1]
+    g = GitUtils(remote_branch="main", current_branch=branch)
+    
+    if branch != "main":
+        alert_slack(f"Have some change in\n- pr https://github.com/tanhaok/docs/pull/{os.getenv(PR_NUMBER)} \n- Branch: https://github.com/tanhaok/docs/tree/{branch}")
+    else:
+        alert_slack("New pr merged into main")
+        
     if g.is_run():
         if len(g.get_category_change()) > 0:
             c = Category()
-            c.run(branch, g.get_category_change())
+            msg = "> CATEGORY \n" + c.run(branch, g.get_category_change())
+            g.comment_pr(msg)
+            alert_slack(msg)
         if len(g.get_blog_change()) > 0:
             b = Blog()
-            b.run(branch, g.get_blog_change())
-        # update_build_and_comment(g)
+            msg ="> BLOG \n" + b.run(branch, g.get_blog_change())
+            g.comment_pr(msg)
+            alert_slack(msg)
+        if branch == "main":
+            update_build_and_comment(g)

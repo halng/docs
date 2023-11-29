@@ -14,7 +14,13 @@ python -m vevn .env
 source ./.env/bin/activate
 ```
 
-- Step 2: Run script
+- Step 2: Install dependencies
+  
+```bash
+pip install -r requirements.txt
+```  
+
+- Step 3: Run script
 
 ```bash
 python ./script/create.py
