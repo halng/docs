@@ -220,8 +220,7 @@ def alert_slack(msg):
 
 
 if __name__ == '__main__':
-    branch = os.getenv("CURRENT_BRANCH", "") #.split("/")[-1]
-    print(branch)
+    branch = os.getenv("CURRENT_BRANCH", "")
     g = GitUtils(remote_branch="main", current_branch=branch)
 
     if branch != "main":
