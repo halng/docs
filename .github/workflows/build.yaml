@@ -1,0 +1,41 @@
+name: Integrate
+
+on:
+  pull_request:
+    branches: [ main ]
+  push: 
+    branches: [ main ]
+
+jobs:
+    main:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v3
+            with:
+              fetch-depth: 0
+
+          - name: Install Python
+            uses: actions/setup-python@v2
+            with:
+              python-version: 3.10.12
+          - name: Pull latest code
+            run: |
+                  git checkout main
+                  git pull origin main
+                  git checkout ${{github.head_ref}}
+                  git pull origin ${{github.head_ref}}
+
+          - name: Install dependencies
+            run: |
+                python -m pip install --upgrade pip
+                pip install -r requirements.txt
+          - name: Execute script
+            env:
+                GITHUB_TOKEN: ${{ secrets.MASTER_GITHUB_TOKEN }}
+                API_KEY_NAME: ${{ secrets.API_KEY_NAME }}
+                SLACK_WEB_HOOK: ${{ secrets.SLACK_WEB_HOOK }}
+                BASE_URL: ${{ secrets.BASE_URL }}
+                PR_NUMBER: ${{ github.event.number }}
+                CURRENT_BRANCH: ${{ github.head_ref }}
+            run: python script/main.py
