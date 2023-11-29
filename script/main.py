@@ -225,9 +225,9 @@ if __name__ == '__main__':
 
     if branch != "main":
         alert_slack(
-            f"Have some change in\n- pr https://github.com/tanhaok/docs/pull/{os.getenv(PR_NUMBER)} \n- Branch: https://github.com/tanhaok/docs/tree/{branch}")
+            f"Hi @here. Have some change in\n- pr https://github.com/tanhaok/docs/pull/{os.getenv(PR_NUMBER)} \n- Branch: https://github.com/tanhaok/docs/tree/{branch}")
     else:
-        alert_slack("New pr merged into main")
+        alert_slack("Hi @here. New pr merged into main")
 
     if g.is_run():
         if len(g.get_category_change()) > 0:
