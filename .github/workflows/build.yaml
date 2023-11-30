@@ -2,9 +2,9 @@ name: Integrate
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ dev ]
   push: 
-    branches: [ main ]
+    branches: [ dev ]
 
 jobs:
     main:
@@ -21,8 +21,8 @@ jobs:
               python-version: 3.10.12
           - name: Pull latest code
             run: |
-                  git checkout main
-                  git pull origin main
+                  git checkout dev
+                  git pull origin dev
                   git checkout ${{github.head_ref}}
                   git pull origin ${{github.head_ref}}
 
