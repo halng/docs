@@ -31,7 +31,7 @@ class GitUtils:
             latest_commit = self.repo.head.commit
             second_latest_commit = latest_commit.parents[0] if latest_commit.parents else None
 
-            changes = self.repo.index.diff(
+            changes = self.repo.git.diff(
                 second_latest_commit, latest_commit, name_status=True)
 
         else:
@@ -220,7 +220,7 @@ def alert_slack(msg):
 
 
 if __name__ == '__main__':
-    branch = os.getenv("CURRENT_BRANCH", "")
+    branch = os.getenv("CURRENT_BRANCH", "main")
     g = GitUtils(remote_branch="main", current_branch=branch)
 
     if branch != "main":
