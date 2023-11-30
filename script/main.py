@@ -249,5 +249,5 @@ if __name__ == '__main__':
             msg = "> BLOG \n" + b.run(branch, g.get_blog_change())
             g.comment_pr(msg)
             alert_slack(msg)
-        if branch == "main":
-            update_build_and_comment(g)
+    if branch == "main":
+        update_build_and_comment(g)
