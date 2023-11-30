@@ -4,8 +4,8 @@ data:
   id: Default
   isShow: true
   lastUpdatedTime: Default
-  next: ''
-  previous: ''
+  next: '001'
+  previous: '003'
   slug: this-is-new-guide
   title: this is new guide
   updatedBy: Default

@@ -159,7 +159,7 @@ class Category(CRUDBase):
         super().__init__("categories")
 
     def run_merged(self, data):
-        return super().run_merged()
+        pass
 
     def run_pre_merged(self, data_changes: dict):
         msg = ""
@@ -206,7 +206,7 @@ class Blog(CRUDBase):
 
                 msg = (
                     msg
-                    + f"\n- {_action} blog name `{new_data['data']['title']}` under `{str(_data['_path'])}`"
+                    + f"\n- {_action} blog metadata `{new_data['data']['title']}` under `{str(_data['_path'])}`"
                 )
             else:
                 if _data["_type"] == "M":
@@ -216,7 +216,7 @@ class Blog(CRUDBase):
         return f"{msg}\n{content_msg}"
 
     def run_merged(self, data):
-        return super().run_merged()
+        pass
 
 
 def update_build_and_comment(_g: GitUtils):
