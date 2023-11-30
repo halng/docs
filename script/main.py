@@ -196,7 +196,7 @@ class Blog(CRUDBase):
                     f"\n- {_action} blog name `{new_data['data']['title']}` under `{str(_data['_path'])}`"
             else:
                 if _data['_type'] == "M":
-                    content_msg = content_msg + f'\n Update block `{_data["_path"][:-9]}`'
+                    content_msg = content_msg + f'\n- Update blog content `{_data["_path"][:-9]}`'
         return f'{msg}\n{content_msg}' 
 
     def run_merged(self, data):
