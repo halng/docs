@@ -178,6 +178,7 @@ class Blog(CRUDBase):
 
     def run_pre_merged(self, data_changes: dict):
         msg = ""
+        content_msg = ""
         for _data in data_changes:
             if str(_data['_path']).endswith('.yaml'):
                 with open(_data['_path'], 'r') as f:
@@ -193,8 +194,10 @@ class Blog(CRUDBase):
 
                 msg = msg + \
                     f"\n- {_action} blog name `{new_data['data']['title']}` under `{str(_data['_path'])}`"
-
-        return msg
+            else:
+                if _data['_type'] == "M":
+                    content_msg = content_msg + f'\n Update block `{_data["_path"][:-9]}`'
+        return f'{msg}\n{content_msg}' 
 
     def run_merged(self, data):
         return super().run_merged()
@@ -220,7 +223,7 @@ def alert_slack(msg):
 
 
 if __name__ == '__main__':
-    branch = os.getenv("CURRENT_BRANCH", "main")
+    branch = os.getenv("CURRENT_BRANCH", "")
     g = GitUtils(remote_branch="main", current_branch=branch)
 
     if branch != "main":
