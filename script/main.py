@@ -12,8 +12,8 @@ SLACK_WEB_HOOK = "SLACK_WEB_HOOK"
 
 
 class Action(Enum):
-    CREATE = 1,
-    UPDATE = 2,
+    CREATE = (1,)
+    UPDATE = (2,)
     UPDATE_STATUS = 3
 
 
@@ -29,31 +29,30 @@ class GitUtils:
     def get_all_changes(self):
         if self.remote_branch == self.current_branch:
             latest_commit = self.repo.head.commit
-            second_latest_commit = latest_commit.parents[0] if latest_commit.parents else None
+            second_latest_commit = (
+                latest_commit.parents[0] if latest_commit.parents else None
+            )
 
             changes = self.repo.git.diff(
-                second_latest_commit, latest_commit, name_status=True)
+                second_latest_commit, latest_commit, name_status=True
+            )
 
         else:
             self.repo.remotes.origin.fetch()
             local_commit = self.repo.commit(self.current_branch)
             remote_commit = self.repo.commit(self.remote_branch)
-            changes = self.repo.git.diff(
-                remote_commit, local_commit, name_status=True)
+            changes = self.repo.git.diff(remote_commit, local_commit, name_status=True)
 
-        for d in changes.split('\n'):
+        for d in changes.split("\n"):
             if d:
-                change_type, file_path = d.split('\t')
-                self.all_changes.append({
-                    '_type': change_type,
-                    '_path': file_path
-                })
+                change_type, file_path = d.split("\t")
+                self.all_changes.append({"_type": change_type, "_path": file_path})
 
     def get_category_change(self):
         # {update: [category name], create: []}
         cate_changes = []
         for change in self.all_changes:
-            _p = change['_path'].split("/")
+            _p = change["_path"].split("/")
             if len(_p) == 3 and _p[0] in ["blogs", "library"]:
                 cate_changes.append(change)
         return cate_changes
@@ -61,62 +60,69 @@ class GitUtils:
     def get_blog_change(self):
         blogs_changes = []
         for change in self.all_changes:
-            _p = change['_path'].split("/")
+            _p = change["_path"].split("/")
             if len(_p) == 4 and _p[0] in ["blogs", "library"]:
                 blogs_changes.append(change)
         return blogs_changes
 
     def is_run(self):
-        """ Check is need to send request to create or not by checking file BUILD."""
+        """Check is need to send request to create or not by checking file BUILD."""
         return "BUILD" not in self.all_changes
 
     def add_latest_change(self, _version):
-        self.repo.config_writer().set_value("user", "email", os.getenv("USER_EMAIL")).release()
+        self.repo.config_writer().set_value(
+            "user", "email", os.getenv("USER_EMAIL")
+        ).release()
         self.repo.config_writer().set_value("user", "name", "Bot").release()
         self.repo.git.add(all=True)
         self.repo.git.commit("-m", str(_version))
         self.repo.git.push("origin", self.current_branch)
-        
 
     def comment_pr(self, msg):
-        pr_url = f'https://api.github.com/repos/tanhaok/docs/issues/{self.pr_number}/comments'
+        pr_url = f"https://api.github.com/repos/tanhaok/docs/issues/{self.pr_number}/comments"
         # Set up the comment data
         comment_data = {
-            'body': msg,
+            "body": msg,
         }
 
         # Create a comment on the pull request
-        response = requests.post(url=pr_url, json=comment_data, headers={
-                                 'Authorization': f'token {os.getenv("GITHUB_TOKEN")}', 'Accept': 'application/vnd.github.v3+json'})
+        response = requests.post(
+            url=pr_url,
+            json=comment_data,
+            headers={
+                "Authorization": f'token {os.getenv("GITHUB_TOKEN")}',
+                "Accept": "application/vnd.github.v3+json",
+            },
+        )
 
         if response.status_code == 201:
-            print('Comment created successfully.')
+            print("Comment created successfully.")
         else:
             print(
-                f'Error creating comment. Status code: {response.status_code}, Response: {response.text}')
+                f"Error creating comment. Status code: {response.status_code}, Response: {response.text}"
+            )
 
 
 class CRUDBase:
     def __init__(self, _url) -> None:
         api_key = os.getenv(API_KEY_NAME)
         self.base_url = os.getenv(BASE_URL)
-        self.req_url = f'{self.base_url}/{_url}'
-        self.header = {'X-REQUEST-API-TOKEN': api_key}
+        self.req_url = f"{self.base_url}/{_url}"
+        self.header = {"X-REQUEST-API-TOKEN": api_key}
         self.data = {}
         self._id = None
 
     def create(self):
-        req = requests.post(
-            url=self.req_url, headers=self.header, data=self.data)
+        req = requests.post(url=self.req_url, headers=self.header, data=self.data)
         return req
 
     def update(self):
-        _url = f'{self.req_url}/{self._id}'
+        _url = f"{self.req_url}/{self._id}"
         req = requests.put(url=_url, data=self.data, headers=self.header)
         return req
 
     def update_status(self):
-        _url = f'{self.req_url}/{self._id}'
+        _url = f"{self.req_url}/{self._id}"
         req = requests.patch(url=_url, data=self.data, headers=self.header)
         return req
 
@@ -158,10 +164,10 @@ class Category(CRUDBase):
     def run_pre_merged(self, data_changes: dict):
         msg = ""
         for _data in data_changes:
-            if str(_data['_path']).endswith('.yaml'):
-                with open(_data['_path'], 'r') as f:
+            if str(_data["_path"]).endswith(".yaml"):
+                with open(_data["_path"], "r") as f:
                     new_data = yaml.safe_load(f)
-                _type = _data['_type']
+                _type = _data["_type"]
                 _action = ""
                 if _type == "A":
                     _action = "Create"
@@ -170,8 +176,10 @@ class Category(CRUDBase):
                 else:
                     _action = "Un-support"
 
-                msg = msg + \
-                    f"\n- {_action} category name `{new_data['data']['name']}` under `{str(_data['_path'])}`"
+                msg = (
+                    msg
+                    + f"\n- {_action} category name `{new_data['data']['name']}` under `{str(_data['_path'])}`"
+                )
 
         return msg
 
@@ -184,10 +192,10 @@ class Blog(CRUDBase):
         msg = ""
         content_msg = ""
         for _data in data_changes:
-            if str(_data['_path']).endswith('.yaml'):
-                with open(_data['_path'], 'r') as f:
+            if str(_data["_path"]).endswith(".yaml"):
+                with open(_data["_path"], "r") as f:
                     new_data = yaml.safe_load(f)
-                _type = _data['_type']
+                _type = _data["_type"]
                 _action = ""
                 if _type == "A":
                     _action = "Create"
@@ -196,12 +204,16 @@ class Blog(CRUDBase):
                 else:
                     _action = "Un-support"
 
-                msg = msg + \
-                    f"\n- {_action} blog name `{new_data['data']['title']}` under `{str(_data['_path'])}`"
+                msg = (
+                    msg
+                    + f"\n- {_action} blog name `{new_data['data']['title']}` under `{str(_data['_path'])}`"
+                )
             else:
-                if _data['_type'] == "M":
-                    content_msg = content_msg + f'\n- Update blog content `{_data["_path"][:-9]}`'
-        return f'{msg}\n{content_msg}' 
+                if _data["_type"] == "M":
+                    content_msg = (
+                        content_msg + f'\n- Update blog content `{_data["_path"][:-9]}`'
+                    )
+        return f"{msg}\n{content_msg}"
 
     def run_merged(self, data):
         return super().run_merged()
@@ -218,15 +230,11 @@ def update_build_and_comment(_g: GitUtils):
 
 
 def alert_slack(msg):
-    payload = {
-        "username": "AutoBot",
-        "icon_emoji": ":robot_face:",
-        'text': msg
-    }
+    payload = {"username": "AutoBot", "icon_emoji": ":robot_face:", "text": msg}
     requests.post(os.getenv(SLACK_WEB_HOOK), json=payload)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     branch = os.getenv("CURRENT_BRANCH", "")
     if branch is None or branch == "":
         branch = "main"
@@ -234,7 +242,8 @@ if __name__ == '__main__':
 
     if branch != "main":
         alert_slack(
-            f"Hi <!here>. Have some change in\n- pr https://github.com/tanhaok/docs/pull/{os.getenv(PR_NUMBER)} \n- Branch: https://github.com/tanhaok/docs/tree/{branch}")
+            f"Hi <!here>. Have some change in\n- pr https://github.com/tanhaok/docs/pull/{os.getenv(PR_NUMBER)} \n- Branch: https://github.com/tanhaok/docs/tree/{branch}"
+        )
     else:
         alert_slack("Hi <!here>. New pr merged into main")
 
