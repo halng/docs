@@ -18,7 +18,7 @@ class Action(Enum):
 
 
 class GitUtils:
-    def __init__(self, remote_branch="main", current_branch="") -> None:
+    def __init__(self, remote_branch="dev", current_branch="") -> None:
         self.pr_number = os.getenv(PR_NUMBER)
         self.repo = git.Repo(".")
         self.all_changes = []
@@ -151,7 +151,7 @@ class CRUDBase:
         pass
 
     def run(self, branch, data):
-        return self.run_merged(data) if branch == "main" else self.run_pre_merged(data)
+        return self.run_merged(data) if branch == "dev" else self.run_pre_merged(data)
 
 
 class Category(CRUDBase):
@@ -237,15 +237,15 @@ def alert_slack(msg):
 if __name__ == "__main__":
     branch = os.getenv("CURRENT_BRANCH", "")
     if branch is None or branch == "":
-        branch = "main"
-    g = GitUtils(remote_branch="main", current_branch=branch)
+        branch = "dev"
+    g = GitUtils(remote_branch="dev", current_branch=branch)
 
-    if branch != "main":
+    if branch != "dev":
         alert_slack(
             f"Hi <!here>. Have some change in\n- pr https://github.com/tanhaok/docs/pull/{os.getenv(PR_NUMBER)} \n- Branch: https://github.com/tanhaok/docs/tree/{branch}"
         )
     else:
-        alert_slack("Hi <!here>. New pr merged into main")
+        alert_slack("Hi <!here>. New pr merged into dev")
 
     if g.is_run():
         if len(g.get_category_change()) > 0:
@@ -258,5 +258,5 @@ if __name__ == "__main__":
             msg = "> BLOG \n" + b.run(branch, g.get_blog_change())
             g.comment_pr(msg)
             alert_slack(msg)
-    if branch == "main":
+    if branch == "dev":
         update_build_and_comment(g)
