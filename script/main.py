@@ -71,8 +71,12 @@ class GitUtils:
         return "BUILD" not in self.all_changes
 
     def add_latest_change(self, _version):
+        self.repo.config_writer().set_value("user", "email", os.getenv("USER_EMAIL")).release()
+        self.repo.config_writer().set_value("user", "name", "Bot").release()
         self.repo.git.add(all=True)
         self.repo.git.commit("-m", str(_version))
+        self.repo.git.push("origin", self.current_branch)
+        
 
     def comment_pr(self, msg):
         pr_url = f'https://api.github.com/repos/tanhaok/docs/issues/{self.pr_number}/comments'
