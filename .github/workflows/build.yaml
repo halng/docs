@@ -38,4 +38,5 @@ jobs:
                 BASE_URL: ${{ secrets.BASE_URL }}
                 PR_NUMBER: ${{ github.event.number }}
                 CURRENT_BRANCH: ${{ github.head_ref }}
+                USER_EMAIL: ${{ secret.USER_EMAIL }}
             run: python script/main.py
