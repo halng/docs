@@ -26,7 +26,6 @@ if __name__ == "__main__":
         alert_slack(msg)
         g.comment_pr(msg)
     if len(g.get_blog_change()) > 0:
-        print(g.get_blog_change())
         msg = "> BLOG "
         for x in g.get_blog_change():
             action = ""
