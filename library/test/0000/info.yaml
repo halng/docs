@@ -2,10 +2,10 @@ data:
   createdBy: Default
   createdTime: Default
   id: Default
-  isShow: false
+  isShow: true
   lastUpdatedTime: Default
-  next: '001'
-  previous: '003'
-  slug: this-is-new-guide
-  title: this is new guide
+  next: None
+  previous: None
+  slug: test-with-me
+  title: test-with-me
   updatedBy: Default
