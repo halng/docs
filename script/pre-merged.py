@@ -21,8 +21,10 @@ if __name__ == "__main__":
         msg = "> CATEGORY "
         for x in g.get_category_change():
             if str(x["_path"]).endswith("yaml"):
-                msg = msg + \
-                    f'\n- {get_action(None, x["_type"]).name} for category `{str(x["_path"]).split("/")[1]}` under `{str(x["_path"]).split("/")[0]}`'
+                msg = (
+                    msg
+                    + f'\n- {get_action(None, x["_type"]).name} for category `{str(x["_path"]).split("/")[1]}` under `{str(x["_path"]).split("/")[0]}`'
+                )
         alert_slack(msg)
         g.comment_pr(msg)
     if len(g.get_blog_change()) > 0:
@@ -31,15 +33,11 @@ if __name__ == "__main__":
             action = ""
             if x["_path"].endswith("yaml"):
                 action = (
-                    Action.UPDATE_METADATA
-                    if x["_type"] == "M"
-                    else Action.CREATE_NEW
+                    Action.UPDATE_METADATA if x["_type"] == "M" else Action.CREATE_NEW
                 )
             elif x["_path"].endswith("md"):
                 action = (
-                    Action.UPDATE_CONTENT
-                    if x["_type"] == "M"
-                    else Action.CREATE_NEW
+                    Action.UPDATE_CONTENT if x["_type"] == "M" else Action.CREATE_NEW
                 )
             msg = (
                 msg

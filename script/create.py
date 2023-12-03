@@ -89,6 +89,7 @@ def create_category():
     DEFAULT_CATE_DATA["name"] = input("Enter category name: ")
     DEFAULT_CATE_DATA["displayName"] = input("Enter display name: ")
     DEFAULT_CATE_DATA["slug"] = slugify(DEFAULT_CATE_DATA["displayName"])
+    DEFAULT_CATE_DATA["prefix"] = parent_folder
     initial_data(parent_folder, DEFAULT_CATE_DATA["name"], DEFAULT_CATE_DATA)
 
 
