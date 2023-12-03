@@ -274,7 +274,7 @@ def get_action(type1: str, type2: str) -> Action:
     Returns:
         _type_: Action Needed
     """
-    
+
     if type1 == type2 and type1 == "A":
         return Action.CREATE_NEW
     elif type1 is None and type2 == "A":
