@@ -17,7 +17,7 @@ if __name__ == "__main__":
     )
 
     g = GitUtils(remote_branch="dev", current_branch=branch)
-    print(g.all_changes)
+    print(g.get_category_change())
     if g.is_run():
         if len(g.get_category_change()) > 0:
             pass

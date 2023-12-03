@@ -1,6 +1,6 @@
 data:
   displayName: Guide
   id: ''
-  isShow: true
+  isShow: false
   name: guide
   slug: guide
