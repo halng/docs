@@ -10,7 +10,7 @@ import requests
 import yaml
 
 # define url
-BASE_URL = os.getenv("BACKEND_BASE_URL")
+BASE_URL = os.getenv("BASE_URL")
 URL_CATEGORY = f"{BASE_URL}/categories"
 URL_BLOG_META = f"{BASE_URL}/blogs/"
 URL_BLOG_CONTENT = f"{BASE_URL}/blogs-content"
