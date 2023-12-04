@@ -10,7 +10,7 @@ from main import alert_slack, GitUtils, PR_NUMBER, get_action, Action
 
 
 if __name__ == "__main__":
-    branch = os.getenv("CURRENT_BRANCH", "op1")
+    branch = os.getenv("CURRENT_BRANCH", "dev-1")
     pr_number = os.getenv(PR_NUMBER, "1")
     alert_slack(
         f"Hi <!here>. Have some change in\n- pr https://github.com/tanhaok/docs/pull/{pr_number} \n- Branch: https://github.com/tanhaok/docs/tree/{branch}"
