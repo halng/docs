@@ -3,6 +3,8 @@ name: Integrate
 on:
   push:
     branches: [ dev ]
+    paths-ignore: 
+      - BUILD
 
 jobs:
     main:

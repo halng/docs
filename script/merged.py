@@ -5,17 +5,17 @@ Script will deploy all change and alert for slack group aware about the change.
 """
 
 import os
-from main import alert_slack, GitUtils
+from main import alert_slack, GitUtils, update_build_and_comment
 import requests
 import yaml
 
 # define url
-BASE_URL = os.getenv("BACKEND_BASE_URL", "http://localhost:9090/api/v1/admin-blogger")
+BASE_URL = os.getenv("BACKEND_BASE_URL")
 URL_CATEGORY = f"{BASE_URL}/categories"
 URL_BLOG_META = f"{BASE_URL}/blogs/"
 URL_BLOG_CONTENT = f"{BASE_URL}/blogs-content"
 
-HEADER = {"X-REQUEST-API-TOKEN": os.getenv("API_KEY_NAME","thebasics_849d14f5b590f0403b9e0bca06769867c2c0bc52734212a99d5ed10caa993317fc254fd7cf4de9d843c48ec1ee4cfcbdc6e6cdcbb737bd20f397ecae8bf9e8d8")}
+HEADER = {"X-REQUEST-API-TOKEN": os.getenv("API_KEY_NAME")}
 
 
 def read_file(file_path: str):
@@ -82,7 +82,7 @@ if __name__ == "__main__":
                     if x["_type"] == "A"
                     else update(x["_path"], URL_CATEGORY)
                 )
-                alert_slack(msg)
+                alert_slack(f'{x["_type"]} metadata {x["_path"]}: {msg}')
 
     if len(g.get_blog_change()) > 0:
         for x in g.get_blog_change():
@@ -92,7 +92,7 @@ if __name__ == "__main__":
                     if x["_type"] == "A"
                     else update(x["_path"], URL_BLOG_META)
                 )
-                alert_slack(msg)
+                alert_slack(f'{x["_type"]} metadata {x["_path"]}: {msg}')
 
         # priority for create metadata first
         for x in g.get_blog_change():
@@ -101,4 +101,6 @@ if __name__ == "__main__":
                 if x["_type"] == "A"
                 else update_content(x["_path"], URL_BLOG_CONTENT)
             )
-            alert_slack(msg)
+            alert_slack(f'{x["_type"]} metadata {x["_path"]}: {msg}')
+
+    update_build_and_comment(g)
