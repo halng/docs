@@ -12,9 +12,10 @@ SLACK_WEB_HOOK = "SLACK_WEB_HOOK"
 
 
 class Action(Enum):
-    CREATE = (1,)
+    CREATE_NEW = (1,)
     UPDATE = (2,)
-    UPDATE_STATUS = 3
+    UPDATE_METADATA = 3
+    UPDATE_CONTENT = 4
 
 
 class GitUtils:
@@ -42,7 +43,6 @@ class GitUtils:
             local_commit = self.repo.commit(self.current_branch)
             remote_commit = self.repo.commit(self.remote_branch)
             changes = self.repo.git.diff(remote_commit, local_commit, name_status=True)
-
         for d in changes.split("\n"):
             if d:
                 change_type, file_path = d.split("\t")
@@ -71,7 +71,7 @@ class GitUtils:
 
     def add_latest_change(self, _version):
         self.repo.config_writer().set_value(
-            "user", "email", os.getenv("USER_EMAIL")
+            "user", "email", os.getenv("USER_EMAIL","haonguyentan2001@gmail.com")
         ).release()
         self.repo.config_writer().set_value("user", "name", "Bot").release()
         self.repo.git.add(all=True)
@@ -128,7 +128,7 @@ class CRUDBase:
 
     def execute(self, action):
         match action:
-            case Action.CREATE:
+            case Action.CREATE_NEW:
                 res = self.create()
             case Action.UPDATE:
                 res = self.update()
@@ -231,7 +231,8 @@ def update_build_and_comment(_g: GitUtils):
 
 def alert_slack(msg):
     payload = {"username": "AutoBot", "icon_emoji": ":robot_face:", "text": msg}
-    requests.post(os.getenv(SLACK_WEB_HOOK), json=payload)
+    web_hook = os.getenv(SLACK_WEB_HOOK,"https://hooks.slack.com/services/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")
+    requests.post(web_hook, json=payload)
 
 
 if __name__ == "__main__":
@@ -260,3 +261,24 @@ if __name__ == "__main__":
             alert_slack(msg)
     if branch == "dev":
         update_build_and_comment(g)
+
+
+def get_action(type1: str, type2: str) -> Action:
+    """Get action needed for blog/category
+
+    Args:
+        type1 (str): readme file type
+        type2 (str): yaml file type
+
+    Returns:
+        _type_: Action Needed
+    """
+
+    if type1 == type2 and type1 == "A":
+        return Action.CREATE_NEW
+    elif type1 is None and type2 == "A":
+        return Action.CREATE_NEW
+    elif type1 is None and type2 == "M":
+        return Action.UPDATE_METADATA
+    elif type1 == "M" and type2 is None:
+        return Action.UPDATE_CONTENT

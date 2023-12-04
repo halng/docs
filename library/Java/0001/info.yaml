@@ -4,8 +4,8 @@ data:
   id: Default
   isShow: true
   lastUpdatedTime: Default
-  next: '001'
-  previous: '003'
-  slug: this-is-new-guide
-  title: this is new guide
+  next: ''
+  previous: ''
+  slug: this-is-new-breaking-change
+  title: This Is New Breaking change
   updatedBy: Default
