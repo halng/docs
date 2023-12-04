@@ -231,8 +231,8 @@ def update_build_and_comment(_g: GitUtils):
 
 
 def alert_slack(msg):
-    payload = {"username": "AutoBot_test", "icon_emoji": ":robot_face:", "text": msg}
-    web_hook = os.getenv(SLACK_WEB_HOOK)
+    payload = {"username": "AutoBot", "icon_emoji": ":robot_face:", "text": msg}
+    web_hook = os.getenv(SLACK_WEB_HOOK, "https://hooks.slack.com/services/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")
     requests.post(web_hook, json=payload)
 
 

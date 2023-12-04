@@ -10,12 +10,12 @@ import requests
 import yaml
 
 # define url
-BASE_URL = os.getenv("BACKEND_BASE_URL")
+BASE_URL = os.getenv("BACKEND_BASE_URL", "http://localhost:9090/api/v1/admin-blogger")
 URL_CATEGORY = f"{BASE_URL}/categories"
 URL_BLOG_META = f"{BASE_URL}/blogs/"
 URL_BLOG_CONTENT = f"{BASE_URL}/blogs-content"
 
-HEADER = {"X-REQUEST-API-TOKEN": os.getenv("API_KEY_NAME")}
+HEADER = {"X-REQUEST-API-TOKEN": os.getenv("API_KEY_NAME","thebasics_849d14f5b590f0403b9e0bca06769867c2c0bc52734212a99d5ed10caa993317fc254fd7cf4de9d843c48ec1ee4cfcbdc6e6cdcbb737bd20f397ecae8bf9e8d8")}
 
 
 def read_file(file_path: str):
@@ -34,16 +34,22 @@ def update_file(file_path: str, data):
 def create(yaml_path: str, url: str) -> str:
     data = read_file(yaml_path)
     req = requests.post(url=url, data=data, headers=HEADER)
-    # TODO: need to check that if success then update file
-    return req.json()
-
+    res = req.json()
+    if res['code'] == 201:
+        update_file(yaml_path, res['data'])
+        return 'Success' 
+    else:
+        return 'Failed'
 
 def update(yaml_path: str, url: str, data) -> str:  # need to load file and read id
     data = read_file(yaml_path)
     req = requests.post(url=url, data=data, headers=HEADER)
-    # TODO: need to check that if success then update file
-    return req.json()["msg"]
-
+    res = req.json()
+    if res['code'] == 200:
+        update_file(yaml_path, res['data'])
+        return 'Success' 
+    else:
+        return 'Failed'
 
 def update_content(path: str, url: str) -> str:
     content = read_file(path)
@@ -51,7 +57,7 @@ def update_content(path: str, url: str) -> str:
     req = requests.put(
         url=url, data={"slug": metadata["slug"], "content": content}, headers=HEADER
     )
-    return req.json()["msg"]
+    return req.json()["data"]
 
 
 def create_content(path: str, url: str) -> str:
@@ -60,7 +66,7 @@ def create_content(path: str, url: str) -> str:
     req = requests.post(
         url=url, data={"slug": metadata["slug"], "content": content}, headers=HEADER
     )
-    return req.json()["msg"]
+    return req.json()["data"]
 
 
 if __name__ == "__main__":
