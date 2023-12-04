@@ -43,7 +43,7 @@ class GitUtils:
             local_commit = self.repo.commit(self.current_branch)
             remote_commit = self.repo.commit(self.remote_branch)
             changes = self.repo.git.diff(remote_commit, local_commit, name_status=True)
-
+        print(changes)
         for d in changes.split("\n"):
             if d:
                 change_type, file_path = d.split("\t")
