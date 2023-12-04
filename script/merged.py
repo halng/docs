@@ -105,4 +105,4 @@ if __name__ == "__main__":
             )
             alert_slack(f'{x["_type"]} metadata {x["_path"]}: {msg}')
 
-    update_build_and_comment(g)
+    # update_build_and_comment(g)
