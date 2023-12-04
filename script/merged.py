@@ -35,6 +35,7 @@ def create(yaml_path: str, url: str) -> str:
     data = read_file(yaml_path)
     req = requests.post(url=url, data=data, headers=HEADER)
     res = req.json()
+    print(res)
     if res['code'] == 201:
         update_file(yaml_path, res['data'])
         return 'Success' 
@@ -45,6 +46,7 @@ def update(yaml_path: str, url: str, data) -> str:  # need to load file and read
     data = read_file(yaml_path)
     req = requests.post(url=url, data=data, headers=HEADER)
     res = req.json()
+    print(res)
     if res['code'] == 200:
         update_file(yaml_path, res['data'])
         return 'Success' 
