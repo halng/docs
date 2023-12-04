@@ -43,7 +43,6 @@ class GitUtils:
             local_commit = self.repo.commit(self.current_branch)
             remote_commit = self.repo.commit(self.remote_branch)
             changes = self.repo.git.diff(remote_commit, local_commit, name_status=True)
-        print(changes)
         for d in changes.split("\n"):
             if d:
                 change_type, file_path = d.split("\t")
@@ -232,7 +231,7 @@ def update_build_and_comment(_g: GitUtils):
 
 def alert_slack(msg):
     payload = {"username": "AutoBot", "icon_emoji": ":robot_face:", "text": msg}
-    web_hook = os.getenv(SLACK_WEB_HOOK, "https://hooks.slack.com/services/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")
+    web_hook = os.getenv(SLACK_WEB_HOOK)
     requests.post(web_hook, json=payload)
 
 
