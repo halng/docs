@@ -10,13 +10,13 @@ import requests
 import yaml
 
 # define url
-BASE_URL = os.getenv("BASE_URL", "https://blogs-xqet3pg4iq-uc.a.run.app/api/v1/admin-blogger")
+BASE_URL = os.getenv("BASE_URL", "")
 URL_CATEGORY = f"{BASE_URL}/categories"
 URL_BLOG_META = f"{BASE_URL}/blogs"
 URL_BLOG_CONTENT = f"{BASE_URL}/blogs-content"
 
 HEADER = {'Content-Type': 'application/json', "X-REQUEST-API-TOKEN": os.getenv(
-    "API_KEY_NAME", "thebasics_849d14f5b590f0403b9e0bca06769867c2c0bc52734212a99d5ed10caa993317fc254fd7cf4de9d843c48ec1ee4cfcbdc6e6cdcbb737bd20f397ecae8bf9e8d8")}
+    "API_KEY_NAME", "")}
 
 
 def read_file(file_path: str):
@@ -60,7 +60,7 @@ def update_content(path: str, url: str) -> str:
     content = read_file(path)
     metadata = read_file(path.replace("README.md", "info.yaml"))
     req = requests.put(
-        url=url, data={"slug": metadata["slug"], "content": content}, headers=HEADER
+        url=url, json={"slug": metadata["slug"], "content": content, "id": metadata["id"], "createdBy": metadata['createdBy'], "updatedBy": metadata["updateBy"]}, headers=HEADER
     )
     return req.json()["data"]
 
@@ -69,7 +69,7 @@ def create_content(path: str, url: str) -> str:
     content = read_file(path)
     metadata = read_file(path.replace("README.md", "info.yaml"))
     req = requests.post(
-        url=url, data={"slug": metadata["slug"], "content": content}, headers=HEADER
+        url=url, json={"slug": metadata["slug"], "content": content, "id": metadata["id"], "createdBy": metadata['createdBy'], "updatedBy": metadata["updateBy"]}, headers=HEADER
     )
     return req.json()["data"]
 
