@@ -91,37 +91,37 @@ def create_content(path: str, url: str) -> str:
 
 
 if __name__ == "__main__":
-    # alert_slack("Hi <!here>. new code merged in `dev` branch. Process deploy start...")
+    alert_slack("Hi <!here>. new code merged in `dev` branch. Process deploy start...")
 
     g = GitUtils(remote_branch="dev", current_branch="dev")
 
-    # if len(g.get_category_change()) > 0:
-    #     for x in g.get_category_change():
-    #         if str(x["_path"]).endswith("yaml"):
-    #             msg = (
-    #                 create(x["_path"], URL_CATEGORY)
-    #                 if x["_type"] == "A"
-    #                 else update(x["_path"], URL_CATEGORY)
-    #             )
-    #             alert_slack(f'{x["_type"]}: category {x["_path"]}: {msg}')
+    if len(g.get_category_change()) > 0:
+        for x in g.get_category_change():
+            if str(x["_path"]).endswith("yaml"):
+                msg = (
+                    create(x["_path"], URL_CATEGORY)
+                    if x["_type"] == "A"
+                    else update(x["_path"], URL_CATEGORY)
+                )
+                alert_slack(f'{x["_type"]}: category {x["_path"]}: {msg}')
 
-    # if len(g.get_blog_change()) > 0:
-    #     for x in g.get_blog_change():
-    #         if x["_path"].endswith("yaml"):
-    #             msg = (
-    #                 create(x["_path"], URL_BLOG_META)
-    #                 if x["_type"] == "A"
-    #                 else update(x["_path"], URL_BLOG_META)
-    #             )
-    #             alert_slack(f'{x["_type"]}: metadata {x["_path"]}: {msg}')
+    if len(g.get_blog_change()) > 0:
+        for x in g.get_blog_change():
+            if x["_path"].endswith("yaml"):
+                msg = (
+                    create(x["_path"], URL_BLOG_META)
+                    if x["_type"] == "A"
+                    else update(x["_path"], URL_BLOG_META)
+                )
+                alert_slack(f'{x["_type"]}: metadata {x["_path"]}: {msg}')
 
-    #     # priority for create metadata first
-    #     for x in g.get_blog_change():
-    #         msg = (
-    #             create_content(x["_path"], URL_BLOG_CONTENT)
-    #             if x["_type"] == "A"
-    #             else update_content(x["_path"], URL_BLOG_CONTENT)
-    #         )
-    #         alert_slack(f'{x["_type"]}: content data {x["_path"]}: {msg}')
+        # priority for create metadata first
+        for x in g.get_blog_change():
+            msg = (
+                create_content(x["_path"], URL_BLOG_CONTENT)
+                if x["_type"] == "A"
+                else update_content(x["_path"], URL_BLOG_CONTENT)
+            )
+            alert_slack(f'{x["_type"]}: content data {x["_path"]}: {msg}')
 
     update_build_and_comment(g)
