@@ -36,7 +36,6 @@ def create(yaml_path: str, url: str) -> str:
     data = read_file(yaml_path)
     req = requests.post(url=url, json=data, headers=HEADER)
     res = req.json()
-    print(res)
     if res['code'] == 201:
         update_file(yaml_path, res['data'])
         return 'Success'
