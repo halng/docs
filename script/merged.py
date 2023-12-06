@@ -15,14 +15,16 @@ URL_CATEGORY = f"{BASE_URL}/categories"
 URL_BLOG_META = f"{BASE_URL}/blogs"
 URL_BLOG_CONTENT = f"{BASE_URL}/blogs-content"
 
-HEADER = {'Content-Type': 'application/json', "X-REQUEST-API-TOKEN": os.getenv(
-    "API_KEY_NAME", "")}
+HEADER = {
+    "Content-Type": "application/json",
+    "X-REQUEST-API-TOKEN": os.getenv("API_KEY_NAME", ""),
+}
 
 
 def read_file(file_path: str):
     with open(file_path, "r") as f:
         if file_path.endswith("yaml"):
-            return yaml.safe_load(f)['data']
+            return yaml.safe_load(f)["data"]
         else:
             return f.read()
 
@@ -36,30 +38,37 @@ def create(yaml_path: str, url: str) -> str:
     data = read_file(yaml_path)
     req = requests.post(url=url, json=data, headers=HEADER)
     res = req.json()
-    if res['code'] == 201:
-        update_file(yaml_path, res['data'])
-        return 'Success'
+    if res["code"] == 201:
+        update_file(yaml_path, res["data"])
+        return "Success"
     else:
-        return 'Failed'
+        return "Failed"
 
 
 def update(yaml_path: str, url: str) -> str:  # need to load file and read id
     data = read_file(yaml_path)
     req = requests.post(url=url, json=data, headers=HEADER)
     res = req.json()
-    print(res)
-    if res['code'] == 200:
-        update_file(yaml_path, res['data'])
-        return 'Success'
+    if res["code"] == 200:
+        update_file(yaml_path, res["data"])
+        return "Success"
     else:
-        return 'Failed'
+        return "Failed"
 
 
 def update_content(path: str, url: str) -> str:
     content = read_file(path)
     metadata = read_file(path.replace("README.md", "info.yaml"))
     req = requests.put(
-        url=url, json={"slug": metadata["slug"], "content": content, "id": metadata["id"], "createdBy": metadata['createdBy'], "updatedBy": metadata["updateBy"]}, headers=HEADER
+        url=url,
+        json={
+            "slug": metadata["slug"],
+            "content": content,
+            "id": metadata["id"],
+            "createdBy": metadata["createdBy"],
+            "updatedBy": metadata["updateBy"],
+        },
+        headers=HEADER,
     )
     return req.json()["data"]
 
@@ -68,14 +77,21 @@ def create_content(path: str, url: str) -> str:
     content = read_file(path)
     metadata = read_file(path.replace("README.md", "info.yaml"))
     req = requests.post(
-        url=url, json={"slug": metadata["slug"], "content": content, "id": metadata["id"], "createdBy": metadata['createdBy'], "updatedBy": metadata["updateBy"]}, headers=HEADER
+        url=url,
+        json={
+            "slug": metadata["slug"],
+            "content": content,
+            "id": metadata["id"],
+            "createdBy": metadata["createdBy"],
+            "updatedBy": metadata["updateBy"],
+        },
+        headers=HEADER,
     )
     return req.json()["data"]
 
 
 if __name__ == "__main__":
-    alert_slack(
-        "Hi <!here>. new code merged in `dev` branch. Process deploy start...")
+    alert_slack("Hi <!here>. new code merged in `dev` branch. Process deploy start...")
 
     g = GitUtils(remote_branch="dev", current_branch="dev")
 
@@ -87,7 +103,7 @@ if __name__ == "__main__":
                     if x["_type"] == "A"
                     else update(x["_path"], URL_CATEGORY)
                 )
-                alert_slack(f'{x["_type"]} metadata {x["_path"]}: {msg}')
+                alert_slack(f'{x["_type"]}: category {x["_path"]}: {msg}')
 
     if len(g.get_blog_change()) > 0:
         for x in g.get_blog_change():
@@ -97,7 +113,7 @@ if __name__ == "__main__":
                     if x["_type"] == "A"
                     else update(x["_path"], URL_BLOG_META)
                 )
-                alert_slack(f'{x["_type"]} metadata {x["_path"]}: {msg}')
+                alert_slack(f'{x["_type"]}: metadata {x["_path"]}: {msg}')
 
         # priority for create metadata first
         for x in g.get_blog_change():
@@ -106,6 +122,6 @@ if __name__ == "__main__":
                 if x["_type"] == "A"
                 else update_content(x["_path"], URL_BLOG_CONTENT)
             )
-            alert_slack(f'{x["_type"]} metadata {x["_path"]}: {msg}')
+            alert_slack(f'{x["_type"]}: content data {x["_path"]}: {msg}')
 
     update_build_and_comment(g)

@@ -2,17 +2,17 @@ import os
 import yaml
 from slugify import slugify
 
-DEFAULT_BLOG_DATA =  { 
-  "createdBy": "Default",
-  "isShow": True,
-  "updateBy": "Default",
-  "nextBlog": "",
-  "previousBlog": "",
-  "slug": "test-with-new-and",
-  "title": "test-with-new-and",  
-  "updatedBy": "Default",
-  "cateId": 1
- }
+DEFAULT_BLOG_DATA = {
+    "createdBy": "Default",
+    "isShow": True,
+    "updateBy": "Default",
+    "nextBlog": "",
+    "previousBlog": "",
+    "slug": "test-with-new-and",
+    "title": "test-with-new-and",
+    "updatedBy": "Default",
+    "cateId": 1,
+}
 
 DEFAULT_CATE_DATA = {
     "id": "",
