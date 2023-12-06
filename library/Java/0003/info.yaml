@@ -1,0 +1,10 @@
+data:
+  cateId: 1
+  createdBy: Default
+  id: 3
+  isShow: true
+  nextBlog: ''
+  previousBlog: ''
+  slug: test-with-java
+  title: Test with java
+  updateBy: Default
