@@ -13,6 +13,7 @@ DEFAULT_BLOG_DATA =  {
   "updatedBy": "Default",
   "cateId": 1
  }
+
 DEFAULT_CATE_DATA = {
     "id": "",
     "slug": "",
