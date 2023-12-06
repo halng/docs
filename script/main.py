@@ -30,9 +30,6 @@ class GitUtils:
     def get_all_changes(self):
         if self.remote_branch == self.current_branch:
             latest_commit = self.repo.head.commit
-            # second_latest_commit = (
-            #     latest_commit.parents[0] if latest_commit.parents else None
-            # )
             second_latest_commit = list(self.repo.iter_commits(paths="./BUILD"))[0]
             changes = self.repo.git.diff(
                 second_latest_commit, latest_commit, name_status=True

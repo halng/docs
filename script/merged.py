@@ -12,7 +12,7 @@ import yaml
 # define url
 BASE_URL = os.getenv("BASE_URL", "http://localhost:9090/api/v1/admin-blogger")
 URL_CATEGORY = f"{BASE_URL}/categories"
-URL_BLOG_META = f"{BASE_URL}/blogs/"
+URL_BLOG_META = f"{BASE_URL}/blogs"
 URL_BLOG_CONTENT = f"{BASE_URL}/blogs-content"
 
 HEADER = {"X-REQUEST-API-TOKEN": os.getenv("API_KEY_NAME", "thebasics_849d14f5b590f0403b9e0bca06769867c2c0bc52734212a99d5ed10caa993317fc254fd7cf4de9d843c48ec1ee4cfcbdc6e6cdcbb737bd20f397ecae8bf9e8d8")}
@@ -105,4 +105,4 @@ if __name__ == "__main__":
             )
             alert_slack(f'{x["_type"]} metadata {x["_path"]}: {msg}')
 
-    # update_build_and_comment(g)
+    update_build_and_comment(g)
