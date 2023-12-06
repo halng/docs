@@ -10,7 +10,7 @@ import requests
 import yaml
 
 # define url
-BASE_URL = os.getenv("BASE_URL", "http://localhost:9090/api/v1/admin-blogger")
+BASE_URL = os.getenv("BASE_URL", "https://blogs-xqet3pg4iq-uc.a.run.app/api/v1/admin-blogger")
 URL_CATEGORY = f"{BASE_URL}/categories"
 URL_BLOG_META = f"{BASE_URL}/blogs"
 URL_BLOG_CONTENT = f"{BASE_URL}/blogs-content"
@@ -22,7 +22,7 @@ HEADER = {'Content-Type': 'application/json', "X-REQUEST-API-TOKEN": os.getenv(
 def read_file(file_path: str):
     with open(file_path, "r") as f:
         if file_path.endswith("yaml"):
-            return yaml.safe_load(f)
+            return yaml.safe_load(f)['data']
         else:
             return f.read()
 
@@ -34,7 +34,7 @@ def update_file(file_path: str, data):
 
 def create(yaml_path: str, url: str) -> str:
     data = read_file(yaml_path)
-    req = requests.post(url=url, data=data, headers=HEADER)
+    req = requests.post(url=url, json=data, headers=HEADER)
     res = req.json()
     print(res)
     if res['code'] == 201:
@@ -46,7 +46,7 @@ def create(yaml_path: str, url: str) -> str:
 
 def update(yaml_path: str, url: str) -> str:  # need to load file and read id
     data = read_file(yaml_path)
-    req = requests.post(url=url, data=data, headers=HEADER)
+    req = requests.post(url=url, json=data, headers=HEADER)
     res = req.json()
     print(res)
     if res['code'] == 200:
