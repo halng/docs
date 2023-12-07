@@ -3,6 +3,9 @@ name: Integrate
 on:
   pull_request:
     branches: [ dev ]
+    paths:
+     - blogs/**
+     - library/**
 
 jobs:
     main:
