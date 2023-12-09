@@ -13,7 +13,7 @@ DEFAULT_BLOG_DATA = {
     "title": "",
     "updateBy": "",
     "cateId": 1,
-    "id": None
+    "id": None,
 }
 
 DEFAULT_CATE_DATA = {
@@ -34,8 +34,10 @@ def initial_data(parent_path: str, child: str, data):
 
     with open(os.path.join(folder_path, "README.md"), "w") as readme_file:
         if len(data) == 5:
-            readme_file.writelines(f"# Blogs under {child} category\n\n| Id |  Name | Next | Previous |\n| - | - | - | - |")
-        else: 
+            readme_file.writelines(
+                f"# Blogs under {child} category\n\n| Id |  Name | Next | Previous |\n| - | - | - | - |"
+            )
+        else:
             readme_file.writelines("Add your content here")
 
 
@@ -49,16 +51,16 @@ def create_blog():
     name = input("Enter blog name: ")
     next = input("Enter next blog id: ")
     previous = input("Enter previous blog id: ")
-    
+
     with open(os.path.join(cate_path, "info.yaml"), "r") as f:
-        data = yaml.safe_load(f)['data']
+        data = yaml.safe_load(f)["data"]
 
     slug = slugify(name)
     DEFAULT_BLOG_DATA["slug"] = slug
     DEFAULT_BLOG_DATA["nextBlog"] = next
     DEFAULT_BLOG_DATA["previousBlog"] = previous
     DEFAULT_BLOG_DATA["title"] = name
-    DEFAULT_BLOG_DATA['cateId'] = data['id']
+    DEFAULT_BLOG_DATA["cateId"] = data["id"]
 
     # get current user
     res = subprocess.run(["git", "config", "user.name"], stdout=subprocess.PIPE)
@@ -81,16 +83,16 @@ def create_category():
         parent_folder = input("Enter parent folder: ")
         if parent_folder is not None:
             break
-    
-    name =  input("Enter category name: ")
+
+    name = input("Enter category name: ")
     DEFAULT_CATE_DATA["name"] = name
     DEFAULT_CATE_DATA["parent"] = slugify(parent_folder)
     DEFAULT_CATE_DATA["slug"] = slugify(name)
-    
+
     for x in os.walk("./docs"):
         if x[0].split("/")[-1] == parent_folder:
             parent_path = x[0]
-    
+
     initial_data(parent_path, slugify(name), DEFAULT_CATE_DATA)
 
 
