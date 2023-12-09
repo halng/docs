@@ -33,7 +33,10 @@ def initial_data(parent_path: str, child: str, data):
         yaml.dump({"data": data}, yaml_file)
 
     with open(os.path.join(folder_path, "README.md"), "w") as readme_file:
-        readme_file.writelines("add your content here....")
+        if len(data) == 5:
+            readme_file.writelines(f"# Blogs under {child} category\n\n| Id |  Name | Next | Previous |\n| - | - | - | - |")
+        else: 
+            readme_file.writelines("Add your content here")
 
 
 def create_blog():
