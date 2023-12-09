@@ -23,9 +23,9 @@ def get_all_changes(current_branch, remote_branch="dev") -> list:
         remote_commit = repo.commit(remote_branch)
         changes = repo.git.diff(remote_commit, local_commit, name_status=True)
     for d in changes.split("\n"):
-        if d:
+        if d is not None and (d.startswith("A") or d.startswith("M")):
             change_type, file_path = d.split("\t")
-            if(str(file_path).startswith("./docs")):
+            if(str(file_path).startswith("docs")):
                 all_changes.append(f"{change_type}_{file_path}")
             
     return all_changes
