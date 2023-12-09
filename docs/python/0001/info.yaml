@@ -1,0 +1,10 @@
+data:
+  cateId: null
+  createdBy: Bot
+  id: null
+  isShow: true
+  nextBlog: ''
+  previousBlog: ''
+  slug: how-to-get-all-sub-in-folder
+  title: How to get all sub in folder
+  updateBy: Bot
