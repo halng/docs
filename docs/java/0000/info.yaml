@@ -1,0 +1,10 @@
+data:
+  cateId: null
+  createdBy: Bot
+  id: null
+  isShow: true
+  nextBlog: ''
+  previousBlog: ''
+  slug: test-with-script
+  title: test with script
+  updateBy: Bot
