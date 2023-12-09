@@ -37,4 +37,4 @@ jobs:
                 PR_NUMBER: ${{ github.event.number }}
                 CURRENT_BRANCH: ${{ github.head_ref }}
                 USER_EMAIL: ${{ secrets.USER_EMAIL }}
-            run: python script_v2/pre-merged.py
+            run: python script_v2/pre-merge.py
