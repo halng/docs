@@ -1,3 +1,4 @@
 .env/
 draft_*
 __pycache__/
+.idea/

@@ -1,0 +1,6 @@
+data:
+  id: 1
+  isShow: true
+  name: Python
+  parent: docs
+  slug: python

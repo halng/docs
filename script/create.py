@@ -1,18 +1,19 @@
 import os
 import yaml
 from slugify import slugify
+import subprocess
 
-DEFAULT_BLOG_DATA =  { 
-  "createdBy": "Default",
-  "isShow": True,
-  "updateBy": "Default",
-  "nextBlog": "",
-  "previousBlog": "",
-  "slug": "test-with-new-and",
-  "title": "test-with-new-and",  
-  "updatedBy": "Default",
-  "cateId": 1
- }
+DEFAULT_BLOG_DATA = {
+    "createdBy": "Default",
+    "isShow": True,
+    "nextBlog": "",
+    "previousBlog": "",
+    "slug": "test-with-new-and",
+    "title": "test-with-new-and",
+    "updatedBy": "Default",
+    "cateId": 1,
+}
+
 DEFAULT_CATE_DATA = {
     "id": "",
     "slug": "",
@@ -67,9 +68,15 @@ def create_blog():
     path_to_parent, name, next_id, previous_id = get_input_data_for_blog()
     slug = slugify(name)
     DEFAULT_BLOG_DATA["slug"] = slug
-    DEFAULT_BLOG_DATA["next"] = next_id
-    DEFAULT_BLOG_DATA["previous"] = previous_id
+    DEFAULT_BLOG_DATA["nextBlog"] = next_id
+    DEFAULT_BLOG_DATA["previousBlog"] = previous_id
     DEFAULT_BLOG_DATA["title"] = name
+
+    # get current user
+    res = subprocess.run(["git", "config", "user.name"], stdout=subprocess.PIPE)
+    git_username = res.stdout.strip().decode()
+    DEFAULT_BLOG_DATA["updatedBy"] = git_username
+    DEFAULT_BLOG_DATA["createdBy"] = git_username
 
     with open("./INDEX", "r") as file:
         number_post = file.readlines()[0]

@@ -1,4 +1,4 @@
-name: Integrate
+name: Deploy
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
             env:
                 GITHUB_TOKEN: ${{ secrets.MASTER_GITHUB_TOKEN }}
                 SLACK_WEB_HOOK: ${{ secrets.SLACK_WEB_HOOK }}
-                API_KEY_NAME: ${{ secrets.API_KEY_NAME }}
+                API_TOKEN_VALUE: ${{ secrets.API_KEY_NAME }}
                 BASE_URL: ${{ secrets.BASE_URL }}
                 USER_EMAIL: ${{ secrets.USER_EMAIL }}
-            run: python script/merged.py
+            run: python script_v2/merged.py
