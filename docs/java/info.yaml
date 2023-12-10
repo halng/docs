@@ -1,6 +1,0 @@
-data:
-  id: null
-  isShow: true
-  name: Java
-  parent: docs
-  slug: java
