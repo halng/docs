@@ -34,10 +34,12 @@ def get_all_changes(current_branch, remote_branch="dev") -> list:
     return all_changes
 
 
-def get_file_content(file_path: str) -> dict | str:
+def get_file_content(file_path: str):
     with open(file_path, "r") as f:
-        raw = yaml.safe_load(f)
-    return raw["data"] if file_path.endswith("yaml") else raw
+        if file_path.endswith("yaml"):
+            return yaml.safe_load(f)["data"]
+        else:
+            return f.read()
 
 
 def update_file_content(file_path: str, data):
@@ -56,3 +58,14 @@ def get_current_user():
     res = subprocess.run(["git", "config", "user.name"], stdout=subprocess.PIPE)
     git_username = res.stdout.strip().decode()
     return git_username
+
+
+def add_latest_change(_version):
+    repo = git.Repo(".")
+    repo.config_writer().set_value(
+        "user", "email", os.getenv("USER_EMAIL", "haonguyentan2001@gmail.com")
+    ).release()
+    repo.config_writer().set_value("user", "name", "harold").release()
+    repo.git.add(all=True)
+    repo.git.commit("-m", str(_version))
+    repo.git.push("origin", "dev")
