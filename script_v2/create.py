@@ -1,8 +1,9 @@
 import os
+
 import yaml
-import subprocess
 from slugify import slugify
 
+from script_v2.utils import get_current_user
 
 DEFAULT_BLOG_DATA = {
     "createdBy": "",
@@ -44,27 +45,26 @@ def initial_data(parent_path: str, child: str, data):
 def create_blog():
     parent_folder = input("Enter category folder name: ")
 
+    cate_path = ""
     for x in os.walk("./docs"):
         if x[0].split("/")[-1] == parent_folder:
             cate_path = x[0]
 
     name = input("Enter blog name: ")
-    next = input("Enter next blog id: ")
-    previous = input("Enter previous blog id: ")
+    next_blog = input("Enter next blog id: ")
+    previous_blog = input("Enter previous blog id: ")
 
     with open(os.path.join(cate_path, "info.yaml"), "r") as f:
         data = yaml.safe_load(f)["data"]
 
     slug = slugify(name)
     DEFAULT_BLOG_DATA["slug"] = slug
-    DEFAULT_BLOG_DATA["nextBlog"] = next
-    DEFAULT_BLOG_DATA["previousBlog"] = previous
+    DEFAULT_BLOG_DATA["nextBlog"] = next_blog
+    DEFAULT_BLOG_DATA["previousBlog"] = previous_blog
     DEFAULT_BLOG_DATA["title"] = name
     DEFAULT_BLOG_DATA["cateId"] = data["id"]
 
-    # get current user
-    res = subprocess.run(["git", "config", "user.name"], stdout=subprocess.PIPE)
-    git_username = res.stdout.strip().decode()
+    git_username = get_current_user()
     DEFAULT_BLOG_DATA["updateBy"] = git_username
     DEFAULT_BLOG_DATA["createdBy"] = git_username
 
@@ -89,6 +89,7 @@ def create_category():
     DEFAULT_CATE_DATA["parent"] = slugify(parent_folder)
     DEFAULT_CATE_DATA["slug"] = slugify(name)
 
+    parent_path = ""
     for x in os.walk("./docs"):
         if x[0].split("/")[-1] == parent_folder:
             parent_path = x[0]

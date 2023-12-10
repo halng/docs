@@ -1,6 +1,9 @@
 import os
-import requests
+
 import git
+import requests
+import yaml
+import subprocess
 
 
 def alert_slack(msg):
@@ -25,7 +28,44 @@ def get_all_changes(current_branch, remote_branch="dev") -> list:
     for d in changes.split("\n"):
         if d is not None and (d.startswith("A") or d.startswith("M")):
             change_type, file_path = d.split("\t")
-            if str(file_path).startswith("docs"):
+            if str(file_path).startswith("docs") and len(file_path.split("/")) > 2:
                 all_changes.append(f"{change_type}_{file_path}")
 
     return all_changes
+
+
+def get_file_content(file_path: str):
+    with open(file_path, "r") as f:
+        if file_path.endswith("yaml"):
+            return yaml.safe_load(f)["data"]
+        else:
+            return f.read()
+
+
+def update_file_content(file_path: str, data):
+    if file_path.endswith("yaml"):
+        with open(file_path, "w") as f:
+            yaml.dump({"data": data}, f)
+
+    if file_path.endswith("md"):
+        raw = get_file_content(file_path)
+        raw = raw + data
+        with open(file_path, "w") as f:
+            f.write(raw)
+
+
+def get_current_user():
+    res = subprocess.run(["git", "config", "user.name"], stdout=subprocess.PIPE)
+    git_username = res.stdout.strip().decode()
+    return git_username
+
+
+def add_latest_change(_version):
+    repo = git.Repo(".")
+    repo.config_writer().set_value(
+        "user", "email", os.getenv("USER_EMAIL", "haonguyentan2001@gmail.com")
+    ).release()
+    repo.config_writer().set_value("user", "name", "harold").release()
+    repo.git.add(all=True)
+    repo.git.commit("-m", str(_version))
+    repo.git.push("origin", "dev")
