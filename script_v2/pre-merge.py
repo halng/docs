@@ -1,4 +1,5 @@
 import os
+
 from utils import get_all_changes, alert_slack
 
 branch = os.getenv("CURRENT_BRANCH", "dev-test")
