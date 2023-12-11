@@ -117,7 +117,8 @@ def update_content(file_path: str):
     }
     res = update_request(json_data, URL_BLOG_CONTENT)
 
-    return "Success" if res["code"] == 200 else "Error"
+    msg = "Success" if res["code"] == 200 else "Error"
+    print(f'Update content `{file_path.replace("/", " > ")}`: {msg}')
 
 
 def update_category(yaml_file_path: str):
@@ -157,11 +158,11 @@ if __name__ == "__main__":
             if str(_path).endswith("yaml"):
                 category_changes.append(obj)
 
-    if len(category_changes) > 0:
-        for category in category_changes:
-            update_category(category["path"]) if category[
-                "action"
-            ] == "M" else create_category(category["path"], metadata_changes)
+    # if len(category_changes) > 0:
+    #     for category in category_changes:
+    #         update_category(category["path"]) if category[
+    #             "action"
+    #         ] == "M" else create_category(category["path"], metadata_changes)
 
     if len(metadata_changes) > 0:
         for metadata in metadata_changes:
