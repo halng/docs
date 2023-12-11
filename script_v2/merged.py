@@ -40,9 +40,7 @@ def create_category(yaml_file_path: str, metadata_changes):
         cate = res["data"]
         cate_id = cate["id"]
         update_file_content(yaml_file_path, cate)
-        print(
-            f"Create new category `{yaml_file_path.replace('/', ' > ')}`: Success"
-        )
+        print(f"Create new category `{yaml_file_path.replace('/', ' > ')}`: Success")
         for change in metadata_changes:
             # update cateId in metadata for blog if need
             if (
@@ -75,9 +73,7 @@ def create_metadata(yaml_file_path: str):
         category_info_path = yaml_file_path[:-14] + "README.md"
         update_file_content(category_info_path, new_row)
 
-        print(
-            f'Create new metadata `{yaml_file_path.replace("/", " > ")}`: Success'
-        )
+        print(f'Create new metadata `{yaml_file_path.replace("/", " > ")}`: Success')
     else:
         print(
             f'Create new metadata `{yaml_file_path.replace("/", " > ")}`: Error with {res}'
@@ -158,22 +154,22 @@ if __name__ == "__main__":
             if str(_path).endswith("yaml"):
                 category_changes.append(obj)
 
-    # if len(category_changes) > 0:
-    #     for category in category_changes:
-    #         update_category(category["path"]) if category[
-    #             "action"
-    #         ] == "M" else create_category(category["path"], metadata_changes)
-    #
-    # if len(metadata_changes) > 0:
-    #     for metadata in metadata_changes:
-    #         update_metadata(metadata["path"]) if metadata[
-    #             "action"
-    #         ] == "M" else create_metadata(metadata["path"])
-    #
-    # if len(content_changes) > 0:
-    #     for content in content_changes:
-    #         update_content(content["path"]) if content[
-    #             "action"
-    #         ] == "M" else create_content(content["path"])
+    if len(category_changes) > 0:
+        for category in category_changes:
+            update_category(category["path"]) if category[
+                "action"
+            ] == "M" else create_category(category["path"], metadata_changes)
+
+    if len(metadata_changes) > 0:
+        for metadata in metadata_changes:
+            update_metadata(metadata["path"]) if metadata[
+                "action"
+            ] == "M" else create_metadata(metadata["path"])
+
+    if len(content_changes) > 0:
+        for content in content_changes:
+            update_content(content["path"]) if content[
+                "action"
+            ] == "M" else create_content(content["path"])
 
     update_build_and_comment()
