@@ -63,9 +63,9 @@ def get_current_user():
 def add_latest_change(_version):
     repo = git.Repo(".")
     repo.config_writer().set_value(
-        "user", "email", os.getenv("USER_EMAIL", "haonguyentan2001@gmail.com")
+        "user", "email", os.getenv("USER_EMAIL", "actions@github.com")
     ).release()
-    repo.config_writer().set_value("user", "name", "harold").release()
+    repo.config_writer().set_value("user", "name", "Git Bot").release()
     repo.git.add(all=True)
     repo.git.commit("-m", str(_version))
     repo.git.push("origin", "dev")

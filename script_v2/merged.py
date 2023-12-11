@@ -163,17 +163,17 @@ if __name__ == "__main__":
     #         update_category(category["path"]) if category[
     #             "action"
     #         ] == "M" else create_category(category["path"], metadata_changes)
-
-    if len(metadata_changes) > 0:
-        for metadata in metadata_changes:
-            update_metadata(metadata["path"]) if metadata[
-                "action"
-            ] == "M" else create_metadata(metadata["path"])
-
-    if len(content_changes) > 0:
-        for content in content_changes:
-            update_content(content["path"]) if content[
-                "action"
-            ] == "M" else create_content(content["path"])
+    #
+    # if len(metadata_changes) > 0:
+    #     for metadata in metadata_changes:
+    #         update_metadata(metadata["path"]) if metadata[
+    #             "action"
+    #         ] == "M" else create_metadata(metadata["path"])
+    #
+    # if len(content_changes) > 0:
+    #     for content in content_changes:
+    #         update_content(content["path"]) if content[
+    #             "action"
+    #         ] == "M" else create_content(content["path"])
 
     update_build_and_comment()
