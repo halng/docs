@@ -7,7 +7,7 @@ from utils import (
     get_file_content,
     get_current_user,
     update_file_content,
-    alert_slack,
+    # alert_slack,
     add_latest_change,
 )
 
@@ -16,7 +16,7 @@ BASE_URL = os.getenv("BASE_URL", "http://localhost:9090/api/v1/admin-blogger")
 URL_CATEGORY = f"{BASE_URL}/categories"
 URL_BLOG_META = f"{BASE_URL}/blogs"
 URL_BLOG_CONTENT = f"{BASE_URL}/blogs-content"
-API_TOKEN_VALUE = os.getenv("API_TOKEN_VALUE", "this-is-not-a-token")
+API_TOKEN_VALUE = os.getenv("API_TOKEN_VALUE", "thebasics_this-is-not-a-token")
 REQUEST_HEADER = {
     "Content-Type": "application/json",
     "X-REQUEST-API-TOKEN": API_TOKEN_VALUE,
@@ -40,7 +40,7 @@ def create_category(yaml_file_path: str, metadata_changes):
         cate = res["data"]
         cate_id = cate["id"]
         update_file_content(yaml_file_path, cate)
-        alert_slack(
+        print(
             f"Create new category `{yaml_file_path.replace('/', ' > ')}`: Success"
         )
         for change in metadata_changes:
@@ -53,12 +53,12 @@ def create_category(yaml_file_path: str, metadata_changes):
                 _data = get_file_content(change["path"])
                 _data["cateId"] = cate_id
                 update_file_content(change["path"], _data)
-                alert_slack(
+                print(
                     f"Update category id for blog `{change['path'].replace('/', ' > ')}`: Success"
                 )
 
     else:
-        alert_slack(
+        print(
             f"Create new category `{yaml_file_path.replace('/', ' > ')}`: Error with {res}"
         )
 
@@ -75,11 +75,11 @@ def create_metadata(yaml_file_path: str):
         category_info_path = yaml_file_path[:-14] + "README.md"
         update_file_content(category_info_path, new_row)
 
-        alert_slack(
+        print(
             f'Create new metadata `{yaml_file_path.replace("/", " > ")}`: Success'
         )
     else:
-        alert_slack(
+        print(
             f'Create new metadata `{yaml_file_path.replace("/", " > ")}`: Error with {res}'
         )
 
@@ -96,14 +96,14 @@ def create_content(file_path: str):
     res = create_request(json_data, URL_BLOG_CONTENT)
 
     msg = "Success" if res["code"] == 201 else "Error"
-    alert_slack(f'Create content for blog `{file_path.replace("/", " > ")}`: {msg}')
+    print(f'Create content for blog `{file_path.replace("/", " > ")}`: {msg}')
 
 
 def update_metadata(yaml_file_path: str):
     data = get_file_content(yaml_file_path)
     res = update_request(data, f'{URL_BLOG_META}/{data["id"]}')
     msg = "Success" if res["code"] == 200 else "Error"
-    alert_slack(f'Update metadata `{yaml_file_path.replace("/", " > ")}`: {msg}')
+    print(f'Update metadata `{yaml_file_path.replace("/", " > ")}`: {msg}')
 
 
 def update_content(file_path: str):
@@ -124,7 +124,7 @@ def update_category(yaml_file_path: str):
     data = get_file_content(yaml_file_path)
     res = update_request(data, f'{URL_CATEGORY}/{data["id"]}')
     msg = "Success" if res["code"] == 200 else "Error"
-    alert_slack(f'Update category `{yaml_file_path.replace("/", " > ")}`: {msg}')
+    print(f'Update category `{yaml_file_path.replace("/", " > ")}`: {msg}')
 
 
 def update_build_and_comment():
@@ -138,7 +138,7 @@ def update_build_and_comment():
 
 
 if __name__ == "__main__":
-    alert_slack("Hi <!here>, new code merged into `dev` branch. Start deploying...")
+    print("Hi <!here>, new code merged into `dev` branch. Start deploying...")
     all_changes = get_all_changes("dev", "dev")
 
     category_changes = []
