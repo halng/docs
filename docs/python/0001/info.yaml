@@ -5,6 +5,6 @@ data:
   isShow: true
   nextBlog: ''
   previousBlog: ''
-  slug: how-to-get-all-sub-in-folder
-  title: How to get all sub in folder
+  slug: how-to-get-all-sub
+  title: How to get all sub
   updateBy: Harold
