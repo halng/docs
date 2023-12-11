@@ -1,6 +1,6 @@
 data:
   id: 1
-  isShow: true
+  isShow: false
   name: Python
   parent: docs
   slug: python

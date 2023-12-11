@@ -40,7 +40,9 @@ def create_category(yaml_file_path: str, metadata_changes):
         cate = res["data"]
         cate_id = cate["id"]
         update_file_content(yaml_file_path, cate)
-        alert_slack(f"Create new category `{yaml_file_path.replace('/', ' > ')}`: Success")
+        alert_slack(
+            f"Create new category `{yaml_file_path.replace('/', ' > ')}`: Success"
+        )
         for change in metadata_changes:
             # update cateId in metadata for blog if need
             if (
@@ -73,7 +75,9 @@ def create_metadata(yaml_file_path: str):
         category_info_path = yaml_file_path[:-14] + "README.md"
         update_file_content(category_info_path, new_row)
 
-        alert_slack(f'Create new metadata `{yaml_file_path.replace("/", " > ")}`: Success')
+        alert_slack(
+            f'Create new metadata `{yaml_file_path.replace("/", " > ")}`: Success'
+        )
     else:
         alert_slack(
             f'Create new metadata `{yaml_file_path.replace("/", " > ")}`: Error with {res}'
