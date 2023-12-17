@@ -16,7 +16,8 @@ BASE_URL = os.getenv("BASE_URL", "http://localhost:9090/api/v1/admin-blogger")
 URL_CATEGORY = f"{BASE_URL}/categories"
 URL_BLOG_META = f"{BASE_URL}/blogs"
 URL_BLOG_CONTENT = f"{BASE_URL}/blogs-content"
-API_TOKEN_VALUE = os.getenv("API_TOKEN_VALUE", "this-is-not-a-token")
+API_TOKEN_VALUE = os.getenv("API_TOKEN_VALUE", "thebasics_this-is-not-a-token")
+
 REQUEST_HEADER = {
     "Content-Type": "application/json",
     "X-REQUEST-API-TOKEN": API_TOKEN_VALUE,
@@ -113,7 +114,8 @@ def update_content(file_path: str):
     }
     res = update_request(json_data, URL_BLOG_CONTENT)
 
-    return "Success" if res["code"] == 200 else "Error"
+    msg = "Success" if res["code"] == 200 else "Error"
+    alert_slack(f'Update content `{file_path.replace("/", " > ")}`: {msg}')
 
 
 def update_category(yaml_file_path: str):
