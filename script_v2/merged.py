@@ -17,6 +17,7 @@ URL_CATEGORY = f"{BASE_URL}/categories"
 URL_BLOG_META = f"{BASE_URL}/blogs"
 URL_BLOG_CONTENT = f"{BASE_URL}/blogs-content"
 API_TOKEN_VALUE = os.getenv("API_TOKEN_VALUE", "thebasics_this-is-not-a-token")
+
 REQUEST_HEADER = {
     "Content-Type": "application/json",
     "X-REQUEST-API-TOKEN": API_TOKEN_VALUE,
