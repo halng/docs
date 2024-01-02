@@ -5,6 +5,6 @@ data:
   isShow: true
   nextBlog: ''
   previousBlog: ''
-  slug: redux-introduction
-  title: Redux Introduction
+  slug: redux-essential-overview-and-concepts
+  title: Redux Essential Overview and Concepts
   updateBy: harold

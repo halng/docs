@@ -170,3 +170,21 @@ const currentValue = selectCounterValue(store.getState())
 console.log(currentValue)
 // 2
 ```
+
+### Redux data flow
+
+- Here's what data flow looks like visually:
+![img](https://redux.js.org/assets/images/ReduxDataFlowDiagram-49fa8c3968371d9ef6f2a1486bd40a26.gif)
+
+> In `Redux`, can break step into more detail:
+- Initial Setup:
+    - A Redux store is created root reducer once function.
+    - The store calls the root reducer once and saves the return value as its inital `state`
+    - When the UI is first rendered, UI components access the current state of the Redux store, and use that data to decide what to render. They also subscribe to any future store updates so they can know if the state has changed.
+- Updates
+    - Something happends in the app, such as a user clicking a button
+    - The app code dispatches an action to the Redux store, like `dispatch({type: 'todos/todoAdded'})`
+    - The `store` run the **reducer function** again with the previous `state` and the current `action` and saves the return value as the new `state`
+    -  The store notifies all parts of the UI that are subscribed that the store has been updated. 
+    - Each UI component that needs data from the store checks to see if the parts of the state they need have changed.
+    - Each component that seesd its data has changed forces a re-render with the new data, so it can update what's shown on the screen.
