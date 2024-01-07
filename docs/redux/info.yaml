@@ -1,0 +1,6 @@
+data:
+  id: 2
+  isShow: true
+  name: Redux
+  parent: docs
+  slug: redux
