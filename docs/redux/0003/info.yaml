@@ -1,7 +1,7 @@
 data:
   cateId: 2
   createdBy: harold
-  id: null
+  id: 3
   isShow: true
   nextBlog: ''
   previousBlog: redux-introduction
