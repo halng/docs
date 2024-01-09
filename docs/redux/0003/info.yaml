@@ -1,0 +1,10 @@
+data:
+  cateId: 2
+  createdBy: harold
+  id: null
+  isShow: true
+  nextBlog: ''
+  previousBlog: redux-introduction
+  slug: redux-introduction-part-ii
+  title: Redux Introduction Part II
+  updateBy: harold
