@@ -3,7 +3,7 @@ import os
 import yaml
 from slugify import slugify
 
-from script_v2.utils import get_current_user
+from utils import get_current_user
 
 DEFAULT_BLOG_DATA = {
     "createdBy": "",
