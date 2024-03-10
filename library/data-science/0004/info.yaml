@@ -1,9 +1,0 @@
-data:
-  cateId: 1
-  createdBy: harold
-  isShow: true
-  nextBlog: ''
-  previousBlog: ''
-  slug: intro
-  title: Intro
-  updatedBy: harold

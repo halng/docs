@@ -16,13 +16,14 @@ if __name__ == "__main__":
         action_type, _path = x.split("_")
         action = "CREATE" if action_type == "A" else "UPDATE"
 
-        if str(_path.split("/")[-2]).isdigit():
-            obj = "BLOG_META" if str(_path).endswith("yaml") else "BLOG_CONTENT"
-            alert_slack(
-                f'`{action}` the `{obj}` in path: `{_path.replace("/", " > ")}`'
-            )
-        else:
-            if str(_path).endswith("yaml"):
+        if not str(_path).endswith("png"):
+            if str(_path.split("/")[-2]).isdigit():
+                obj = "BLOG_META" if str(_path).endswith("yaml") else "BLOG_CONTENT"
                 alert_slack(
-                    f'`{action}` the `CATEGORY` in path: `{_path.replace("/", " > ")}`'
+                    f'`{action}` the `{obj}` in path: `{_path.replace("/", " > ")}`'
                 )
+            else:
+                if str(_path).endswith("yaml"):
+                    alert_slack(
+                        f'`{action}` the `CATEGORY` in path: `{_path.replace("/", " > ")}`'
+                    )
